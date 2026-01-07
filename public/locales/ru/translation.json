@@ -1,0 +1,91 @@
+{
+  "auth": {
+    "title": "Вход",
+    "hint": "Пожалуйста, войдите, чтобы продолжить"
+  },
+  "snippets": {
+    "page_title": "Сниппеты",
+    "filter_hint": "возможно вам это поможет...",
+    "create_modal": {
+      "title": "Создать сниппет",
+      "subtitle": "Заполните поля, чтобы создать сниппет",
+      "fields": {
+        "title": "Заголовок",
+        "code": "Код",
+        "description": "Описание",
+        "language": "Язык",
+        "tags": "Теги"
+      },
+      "actions": {
+        "save": "Сохранить"
+      },
+      "toasts": {
+        "created": "Сниппет создан",
+        "error": "Ошибка при сохранении",
+        "not_auth": "Необходимо войти в аккаунт"
+      }
+    },
+    "details_modal": {
+      "title": "Детали сниппета",
+      "subtitle_edit": "Режим редактирования",
+      "subtitle_view": "Режим просмотра",
+      "actions": {
+        "update": "Обновить"
+      }
+    },
+    "filters": {
+      "language": "Язык",
+      "tags": "Теги",
+      "clear": "Очистить",
+      "placeholder": "Поиск сниппетов..."
+    }
+  },
+  "navbar": {
+    "home": "Главная",
+    "snippets": "Сниппеты",
+    "login": "Вход"
+  },
+  "sidebar": {
+    "dashboard": "Панель",
+    "snippets": "Все сниппеты",
+    "favorites": "Избранные",
+    "about": "О нас",
+    "contacts": "Контакты",
+    "logout": "Выйти",
+    "expand": "Развернуть сайдбар",
+    "collapse": "Свернуть сайдбар",
+    "social": "Сообщество"
+  },
+  "about": {
+    "title": "О нас",
+    "description": "Это приложение помогает хранить и делиться сниппетами кода.",
+    "note": "здесь должно быть что-то полезное... пожалуй остановимся на этом",
+    "usd": "Курс доллара",
+    "eur": "Курс евро",
+    "rub": "₽"
+  },
+  "favorites_page": {
+    "title": "Избранные сниппеты",
+    "empty": "Нет избранных сниппетов"
+  },
+  "social_page": {
+    "title": "Сообщество",
+    "empty": "Пока нет пользователей",
+    "developer_type_label": "Тип разработчика",
+    "developer_types": {
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "fullstack": "Fullstack",
+      "devops": "DevOps",
+      "mobile": "Mobile",
+      "data": "Data",
+      "qa": "QA",
+      "pm": "Product Manager",
+      "designer": "Designer",
+      "other": "Другой"
+    },
+    "dev_types": "Типы разработчиков",
+    "all_types": "Все типы",
+    "loading": "Загрузка..."
+  }
+}

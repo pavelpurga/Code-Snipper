@@ -1,0 +1,46 @@
+/* Header */
+.user-header {
+    margin-bottom: 16px;
+  border: 1px solid var(--modal-border, rgba(0,0,0,0.15));
+  border-radius: 12px;
+  padding: 12px;
+  background: var(--modal-bg, rgba(0,0,0,0.03));
+  display: grid;
+  gap: 8px;
+}
+.user-header__main {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.user-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #646cff, #9a4dff);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+}
+.user-name {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--foreground);
+}
+.user-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.user-meta__tag {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(100,108,255,0.12);
+  color: #646cff;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+.user-bio { color: var(--muted-foreground); }
+

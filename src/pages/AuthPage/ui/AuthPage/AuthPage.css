@@ -1,0 +1,133 @@
+.auth-page {
+    position: relative;
+    min-height: 100svh;
+    height: 100svh;
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+    gap: 0;
+    background: linear-gradient(180deg, var(--background, #0f0f14), var(--sidebar-dark, #11111b));
+    overflow: hidden; /* без скролла на странице */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Анимированный фон */
+.auth-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+            radial-gradient(circle at 20% 80%, rgba(100, 108, 255, 0.15) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(154, 77, 255, 0.1) 0%, transparent 50%);
+    z-index: 0;
+}
+
+/* Левая секция: позволяет контенту сжиматься */
+.auth-page__info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(12px, 2.5vw, 28px);
+  border-right: 1px solid var(--modal-border, #2a2a35);
+  overflow: hidden;
+  min-width: 0;
+}
+.auth-info__content {
+  max-width: 520px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 1.8vw, 16px);
+}
+.auth-info__logo { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.logo-text { font-weight: 800; font-size: clamp(0.95rem, 2.2vw, 1.05rem); color: var(--foreground, #e7e7ea); }
+.auth-badge { margin-bottom: 4px; color: var(--muted-foreground, #a1a1aa); font-size: clamp(0.8rem, 2vw, 0.9rem); }
+.auth-title { font-size: clamp(18px, 3.2vw, 26px); font-weight: 800; margin: 2px 0 6px; }
+.auth-description { color: var(--muted-foreground, #a1a1aa); margin-bottom: 8px; font-size: clamp(0.85rem, 2vw, 0.95rem); }
+.auth-features { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.auth-features li { display: inline-flex; align-items: center; gap: 6px; color: var(--foreground); font-size: clamp(0.85rem, 2vw, 0.95rem); }
+.auth-info__footer { color: var(--muted-foreground); font-size: clamp(0.75rem, 1.8vw, 0.85rem); margin-top: auto; }
+
+/* Правая секция формы */
+.auth-page__form-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(12px, 2.5vw, 28px);
+  overflow: hidden;
+  align-content: center;
+}
+.auth-form__container {
+  width: min(540px, 96vw);
+  max-height: calc(100svh - 2 * clamp(12px, 2.5vw, 28px));
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--modal-border, #2a2a35);
+  border-radius: 16px;
+  background: var(--modal-bg, rgba(0,0,0,0.12));
+  backdrop-filter: blur(6px);
+  box-shadow: 0 16px 48px rgba(0,0,0,.35);
+  padding: clamp(12px, 2.5vw, 20px);
+}
+.auth-form__header h2 { font-size: clamp(18px, 2.6vw, 22px); font-weight: 800; }
+.auth-form__header p { color: var(--muted-foreground, #a1a1aa); margin-top: 4px; font-size: clamp(0.85rem, 2vw, 0.95rem); }
+
+/* Убираем внутренние скроллы, позволяем контенту сжиматься */
+.auth-form { display: flex; flex-direction: column; gap: clamp(8px, 1.5vw, 12px); overflow: hidden; flex: 1 1 auto; }
+.auth-error-message { display: inline-flex; align-items: center; gap: 6px; border: 1px solid color-mix(in oklab, #ef4444 32%, var(--border, #2a2a35)); border-radius: 10px; padding: 6px 8px; color: #fecaca; background: color-mix(in oklab, #ef4444 10%, var(--background, #0f0f14)); font-size: clamp(0.82rem, 1.9vw, 0.92rem); }
+.form-group { display: grid; gap: 4px; }
+.form-group label { font-size: clamp(0.82rem, 1.9vw, 0.92rem); color: var(--foreground); }
+.auth-input { width: 100%; padding: clamp(8px, 1.8vw, 10px) clamp(10px, 2vw, 12px); border-radius: 10px; border: 1px solid var(--border, #2a2a35); background: var(--background, #0f0f14); color: var(--foreground, #e7e7ea); }
+.auth-submit-btn { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: clamp(8px, 1.8vw, 10px) clamp(10px, 2vw, 12px); border-radius: 12px; }
+
+.auth-form__footer { margin-top: 6px; display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.toggle-auth-btn { background: transparent; border: 1px solid var(--border, #2a2a35); padding: 6px 8px; border-radius: 10px; color: var(--foreground); cursor: pointer; font-size: clamp(0.82rem, 1.9vw, 0.92rem); }
+
+/* Canvas-оверлей для следа курсора */
+.auth-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* не блокирует клики по форме */
+  z-index: 1; /* поверх фона, под контентом можно сделать 0 при необходимости */
+}
+
+/* Поднимаем контент над канвасом */
+.auth-page__info, .auth-page__form-section { position: relative; z-index: 2; }
+
+/* Адаптив: одна колонка на узких и низких экранах */
+@media (max-width: 960px) {
+  .auth-page { grid-template-columns: 1fr; }
+  .auth-page__info { display: none; }
+}
+
+/* Компактный режим при малой высоте (например, ноутбуки с небольшой рабочей областью) */
+@media (max-height: 700px) {
+  .auth-info__content { max-width: 480px; }
+  .auth-form__container { width: min(480px, 100%); }
+}
+
+/* Очень узкие экраны — ещё более компактные отступы и размеры */
+@media (max-width: 380px) {
+  .auth-page__form-section { padding: clamp(8px, 2vw, 16px); }
+  .auth-form__container { width: min(520px, 98vw); padding: clamp(10px, 2vw, 16px); }
+  .auth-title { font-size: clamp(16px, 5vw, 22px); }
+}
+
+/* Очень малая высота — прячем второстепенные элементы левой панели, уплотняем форму */
+@media (max-height: 620px) {
+  .auth-badge, .auth-info__footer { display: none; }
+  .auth-features { grid-template-columns: 1fr; }
+}
+
+/* Сверхкомпактный по высоте режим: скрываем список фич, чтобы форма не вылезала */
+@media (max-height: 540px) {
+  .auth-features { display: none; }
+}
+
+/* Предотвращаем горизонтальный скролл на очень узких экранах */
+html, body { width: 100%; overflow-x: hidden; }

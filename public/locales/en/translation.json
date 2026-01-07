@@ -1,0 +1,96 @@
+{
+
+  "auth": {
+    "title": "Sign in",
+    "hint": "Please, sign in to continue"
+  },
+  "snippets": {
+    "page_title": "Snippets",
+    "filter_hint": "this might help...",
+    "create_modal": {
+      "title": "Create snippet",
+      "subtitle": "Fill the fields to create a snippet",
+      "fields": {
+        "title": "Title",
+        "code": "Code",
+        "description": "Description",
+        "language": "Language",
+        "tags": "Tags"
+      },
+      "actions": {
+        "create": "Create snippet",
+        "creating": "Creating...",
+        "save": "Save changes",
+        "saving": "Saving..."
+      },
+      "toasts": {
+        "created": "Snippet created",
+        "updated": "Snippet updated!",
+        "error": "Error saving",
+        "not_auth": "You need to log in"
+      }
+    },
+    "details_modal": {
+      "title": "Snippet details",
+      "subtitle_view": "View mode",
+      "subtitle_edit": "Edit mode",
+      "actions": {
+        "update": "Update"
+      }
+    },
+    "filters": {
+      "language": "Language",
+      "tags": "Tags",
+      "clear": "Clear",
+      "placeholder": "Search snippets..."
+    }
+  },
+  "navbar": {
+    "home": "Home",
+    "snippets": "Snippets",
+    "login": "Login"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "snippets": "All snippets",
+    "favorites": "Favorites",
+    "about": "About",
+    "contacts": "Contacts",
+    "logout": "Log out",
+    "expand": "Expand sidebar",
+    "collapse": "Collapse sidebar",
+    "social": "Social"
+  },
+  "about": {
+    "title": "About",
+    "description": "This app helps you store and share code snippets.",
+    "note": "there should be something useful here... let's stop at this",
+    "usd": "USD rate",
+    "eur": "EUR rate",
+    "rub": "₽"
+  },
+  "favorites_page": {
+    "title": "Favorite snippets",
+    "empty": "No favorites yet"
+  },
+  "social_page": {
+    "title": "Community",
+    "empty": "No users yet",
+    "developer_type_label": "Developer type",
+    "developer_types": {
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "fullstack": "Fullstack",
+      "devops": "DevOps",
+      "mobile": "Mobile",
+      "data": "Data",
+      "qa": "QA",
+      "pm": "Product Manager",
+      "designer": "Designer",
+      "other": "Other"
+    },
+    "dev_types": "Developer types",
+    "all_types": "All types",
+    "loading": "Loading..."
+  }
+}

@@ -1,0 +1,133 @@
+.snippet-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--modal-border, rgba(0,0,0,0.2)); /* усилил контраст */
+  border-radius: 12px;
+  background: var(--modal-bg, rgba(0,0,0,0.03)); /* чуть темнее в светлой теме */
+  height: 340px; /* больше места под код */
+  overflow: hidden; /* прячем выходящее содержимое */
+}
+
+/* Header layout: tags wrap and language badge pinned to the right */
+.snippet-card__header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 8px;
+  align-items: start;
+}
+
+.snippet-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  overflow: visible;
+}
+
+/* Individual tag chip: single-line with ellipsis if too long */
+.snippet-card__tag {
+  display: inline-flex;
+  align-items: center;
+  max-width: 140px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Keep language badge aligned at the right */
+.snippet-card__language { justify-self: end; }
+
+/* Контентная область фиксированной высоты с многоточием */
+.snippet-card__content {
+  flex-shrink: 0;
+  max-height: 48px; /* заголовок + одна строка описания */
+  overflow: hidden;
+}
+.snippet-card__title {
+  font-weight: 700;
+  margin: 2px 0 4px;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* многоточие */
+}
+.snippet-card__description {
+  color: var(--muted-foreground);
+  font-size: 0.85rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* не более двух строк */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Превью кода фиксированной высоты, только видимая часть, остальное скрыто */
+.snippet-card__preview {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--code-bg, rgba(0,0,0,0.04)); /* затемнённый fallback */
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,0.15), /* рамка темнее для светлой темы */
+    inset 0 0 0 2px rgba(255,255,255,0.02); /* лёгкий внутренний акцент */
+}
+/* Индикатор продолжения */
+.snippet-card__more {
+  position: absolute;
+  right: 8px;
+  bottom: 6px;
+  color: var(--muted-foreground);
+  background: linear-gradient(90deg, rgba(0,0,0,0), var(--code-bg, rgba(0,0,0,0.04)) 60%);
+  padding-left: 12px;
+}
+
+.snippet-card__footer { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; }
+.snippet-card__date { font-size: 0.75rem; color: var(--muted-foreground); }
+.snippet-card__actions { display: flex; gap: 8px; }
+.snippet-card__action { display: inline-flex; align-items: center; justify-content: center; }
+
+/* Бейдж автора для чужих избранных сниппетов */
+.snippet-card__meta { display: inline-flex; align-items: center; gap: 8px; }
+.snippet-card__author-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--modal-border, rgba(0,0,0,0.15));
+  background: var(--modal-bg, rgba(0,0,0,0.03));
+  color: var(--foreground);
+}
+.snippet-card__author-text { font-size: 0.78rem; max-width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Скелетон и границы */
+.snippet-card__gradient-border { position: absolute; inset: 0; border-radius: 12px; pointer-events: none; }
+
+/* Доп. улучшения читаемости кода */
+.snippet-card__preview pre,
+.snippet-card__preview code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  line-height: 1.4;
+  background: transparent !important;
+}
+
+/* Тонкий кастомный скролл внутри превью, если появится */
+.snippet-card__preview::-webkit-scrollbar { height: 6px; width: 6px; }
+.snippet-card__preview::-webkit-scrollbar-track { background: rgba(255,255,255,0.06); border-radius: 8px; }
+.snippet-card__preview::-webkit-scrollbar-thumb { background: rgba(100,108,255,0.4); border-radius: 8px; }
+.snippet-card__preview::-webkit-scrollbar-thumb:hover { background: rgba(100,108,255,0.6); }
+
+.snippet-card__action--fav {
+  background: rgba(250, 204, 21, 0.15);
+  color: #facc15;
+}
+.snippet-card__action--fav:hover {
+  background: rgba(250, 204, 21, 0.25);
+  box-shadow: 0 4px 12px rgba(250, 204, 21, 0.25);
+}
+.snippet-card__action--fav-off:hover {
+  background: rgba(250, 204, 21, 0.15);
+  color: #facc15;
+}

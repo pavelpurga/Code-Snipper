@@ -1,0 +1,65 @@
+{
+  "edit": "Edit",
+  "update": "Update",
+  "save": "Save",
+  "close": "Close",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "copy": "Copy",
+  "confirm": "Confirm",
+  "yes": "Yes",
+  "no": "No",
+
+  "filters": {
+    "create_filter": "Create filter",
+    "clear": "Clear",
+    "search_placeholder": "Search snippets...",
+    "language": "Language",
+    "tags": "Tags",
+    "all_languages": "All languages",
+    "all_tags": "All tags",
+    "user_search_placeholder": "Search user's snippets...",
+    "hint": "This might help..."
+  },
+  "sidebar": {
+    "snippets": "Snippets",
+    "favorites": "Favorites",
+    "social": "Community",
+    "about": "About",
+    "logout": "Log out",
+    "contacts": "Contacts",
+    "expand": "Expand",
+    "collapse": "Collapse"
+  },
+  "user": {
+    "back_to_community": "Back to community"
+  },
+  "toasts": {
+    "copied": "Code copied",
+    "deleted": "Snippet deleted",
+    "added_favorite": "Snippet added to favorites",
+    "removed_favorite": "Snippet removed from favorites",
+    "error": "Something went wrong"
+  },
+  "confirmations": {
+    "delete_snippet_title": "Delete snippet?",
+    "delete_snippet_text": "This action cannot be undone.",
+    "logout_title": "Log out?",
+    "logout_text": "Are you sure you want to log out?"
+  },
+  "social": {
+    "developer_type": "Developer type",
+    "developer_types": {
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "fullstack": "Fullstack",
+      "devops": "DevOps",
+      "mobile": "Mobile",
+      "data": "Data",
+      "qa": "QA",
+      "pm": "Product Manager",
+      "designer": "Designer",
+      "other": "Other"
+    }
+  }
+}

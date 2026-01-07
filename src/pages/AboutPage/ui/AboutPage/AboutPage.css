@@ -1,0 +1,32 @@
+.about { padding: 16px; }
+.about__title { font-size: 1.5rem; font-weight: 800; margin-bottom: 8px; }
+.about__text { color: var(--muted-foreground); margin-bottom: 4px; }
+.about__note { color: var(--foreground); margin-bottom: 12px; }
+
+/* Сетка графиков: на десктопе 2 в ряд, на узких — одна колонка */
+.about__charts { display: grid; grid-template-columns: repeat(2, minmax(280px, 1fr)); gap: 16px; margin-top: 8px; align-items: stretch; }
+@media (max-width: 920px) { .about__charts { grid-template-columns: 1fr; } }
+
+/* Карточка с графиком адаптивная, без принудительных размеров, график управляется самим SVG */
+.about-card { border: 1px solid var(--modal-border, rgba(0,0,0,0.15)); border-radius: 12px; padding: 12px; background: var(--modal-bg, rgba(0,0,0,0.03)); min-width: 0; }
+.about-card__header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; gap: 8px; flex-wrap: wrap; }
+.about-card__title { font-weight: 700; }
+.about-card__value { color: var(--muted-foreground); font-size: 0.9rem; }
+/* SVG размеры задаются в компоненте; тут только растягиваем на ширину карточки */
+.about-card__chart { display: block; width: 100%; height: auto; }
+.about-card__sub { font-size: 0.8rem; color: var(--muted-foreground); margin-bottom: 6px; }
+
+/* Переключатели: на мобильных в столбик, на десктопе по краям */
+.about__switch { display: inline-flex; gap: 8px; padding: 4px; border: 1px solid var(--modal-border, rgba(0,0,0,0.15)); border-radius: 999px; background: var(--modal-bg, rgba(0,0,0,0.03)); margin: 8px 0 14px; }
+.about__switch-btn { padding: 6px 12px; border-radius: 999px; border: 1px solid transparent; background: transparent; color: var(--foreground); cursor: pointer; font-weight: 600; }
+.about__switch-btn.is-active { background: rgba(100,108,255,0.15); border-color: rgba(100,108,255,0.35); color: var(--foreground); }
+.about__switch-btn:hover { background: rgba(100,108,255,0.12); }
+.about__controls { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 8px 0 12px; flex-wrap: wrap; }
+@media (max-width: 640px) { .about__controls { flex-direction: column; align-items: stretch; } .about__switch { width: 100%; justify-content: center; } }
+
+/* Расширенный вид — на средних/больших 2 в ряд, на маленьких — 1 */
+.about__charts.about__charts--wide { grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 1024px) { .about__charts.about__charts--wide { grid-template-columns: repeat(2, minmax(360px, 1fr)); } }
+@media (max-width: 860px) { .about__charts.about__charts--wide { grid-template-columns: 1fr; } }
+
+.about-card { min-width: 0; }

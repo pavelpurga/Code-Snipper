@@ -1,0 +1,417 @@
+:root { --navbar-height: 72px; }
+
+.navbar {
+    height: var(--navbar-height, 72px);
+    width: 100%;
+    min-width: 0;
+    background: linear-gradient(90deg, var(--sidebar, #1e1e2e) 0%, var(--sidebar-dark, #11111b) 100%);
+    border-bottom: 1px solid var(--sidebar-border, #313244);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    flex-shrink: 0;
+    z-index: 1000; /* Увеличиваем z-index для надежности */
+    position: fixed; /* Меняем sticky на fixed */
+    top: 0;
+    left: 0;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-wrap: nowrap;
+}
+
+.navbar__left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0; /* allow text truncate */
+}
+
+.navbar__user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1.2;
+    color: var(--foreground, #ffffff);
+}
+
+.user-email {
+    color: #a0a0a0;
+}
+
+/* Logo */
+.navbar__logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--foreground, #ffffff);
+    padding: 8px 12px;
+    border-radius: var(--radius-md, 12px);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    min-width: 0;
+}
+
+.navbar__logo::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(100, 108, 255, 0.1), transparent);
+    transition: left 0.7s ease;
+}
+
+.navbar__logo:hover::before {
+    left: 100%;
+}
+
+.navbar__logo:hover {
+    transform: translateY(-1px);
+}
+
+.navbar__logo svg {
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+    background: linear-gradient(135deg, #646cff, #9a4dff);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(100, 108, 255, 0.4);
+    transition: all 0.3s ease;
+}
+
+.navbar__logo:hover svg {
+    transform: rotate(5deg) scale(1.05);
+    box-shadow: 0 6px 18px rgba(100, 108, 255, 0.5);
+}
+
+.navbar__logo span {
+    background: linear-gradient(90deg, #ffffff, #a5b4fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.3px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Actions */
+.navbar__actions {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex: 0 0 auto;
+    min-width: auto;
+}
+
+/* Strong outlines for action buttons, excluding avatar */
+.navbar__actions > :not(.navbar__avatar) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md, 12px);
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(0,0,0,0.25);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    transition: all 0.2s ease;
+}
+
+.navbar__actions > :not(.navbar__avatar):hover {
+    background: rgba(100,108,255,0.18);
+    border-color: rgba(100,108,255,0.45);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(100,108,255,0.25);
+}
+
+/* Exclude profile wrapper from action button outlines */
+.navbar__actions > .profile {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0;
+}
+
+/* Уточнение для светлой темы: делаем бордер ещё чуть заметнее */
+@media (prefers-color-scheme: light) {
+    .navbar__actions > :not(.navbar__avatar) {
+        background: rgba(0,0,0,0.04);
+        border-color: rgba(0,0,0,0.3);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+    }
+}
+
+/* Navigation Buttons */
+.nav-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-md, 12px);
+    cursor: pointer;
+    color: var(--sidebar-foreground, #cdd6f4);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.6s ease;
+}
+
+.nav-btn:hover::before {
+    left: 100%;
+}
+
+.nav-btn:hover {
+    background: rgba(100, 108, 255, 0.15);
+    border-color: rgba(100, 108, 255, 0.3);
+    color: var(--foreground, #ffffff);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(100, 108, 255, 0.25);
+}
+
+.nav-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(100, 108, 255, 0.2);
+}
+
+.nav-btn svg {
+    position: relative;
+    z-index: 1;
+    transition: transform 0.3s ease;
+}
+
+.nav-btn:hover svg {
+    transform: scale(1.1);
+}
+
+/* Language Button Specific */
+.navbar__actions .nav-btn:first-child:hover {
+    background: rgba(76, 175, 80, 0.15);
+    border-color: rgba(76, 175, 80, 0.3);
+    box-shadow: 0 6px 16px rgba(76, 175, 80, 0.25);
+}
+
+/* Theme Button Specific */
+.navbar__actions .nav-btn:nth-child(2):hover {
+    background: rgba(255, 193, 7, 0.15);
+    border-color: rgba(255, 193, 7, 0.3);
+    box-shadow: 0 6px 16px rgba(255, 193, 7, 0.25);
+}
+
+/* Avatar */
+.navbar__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #646cff, #9a4dff);
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(100, 108, 255, 0.3);
+    border: none !important;
+}
+
+.navbar__avatar::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(100, 108, 255, 0.2), transparent);
+    animation: pulse 2s infinite;
+}
+
+.navbar__avatar:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 24px rgba(100, 108, 255, 0.4);
+    border: none !important;
+}
+
+.navbar__avatar:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Avatar with User Initials (дополнительный вариант) */
+.navbar__avatar.with-initials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* Badge Notification (опционально) */
+.navbar__avatar::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 12px;
+    height: 12px;
+    background: linear-gradient(135deg, #ff4757, #ff3838);
+    border-radius: 50%;
+    border: 2px solid var(--sidebar-dark, #11111b);
+    animation: pulse 2s infinite;
+}
+
+/* Animation for notification pulse */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.4;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+}
+
+/* Tooltip for buttons */
+.nav-btn[title] {
+    position: relative;
+}
+
+.nav-btn[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--sidebar-dark, #11111b);
+    color: var(--foreground, #ffffff);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    z-index: 1000;
+    border: 1px solid var(--sidebar-border, #313244);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+}
+
+/* Base tweaks for better flex behavior and mobile control */
+.navbar {
+    width: 100%;
+    min-width: 0;
+}
+
+.navbar__left {
+    gap: 10px;
+    min-width: 0; /* allow text truncate */
+}
+
+/* Hide burger by default (desktop/tablet); show on mobile via media query */
+.navbar__burger {
+    display: none;
+}
+
+/* Ensure actions don’t shrink away and stay aligned right */
+.navbar__actions {
+    flex: 0 0 auto;
+    min-width: auto;
+}
+
+/* Prevent logo text overflow issues */
+.navbar__logo {
+    min-width: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 0 12px;
+    }
+
+    .navbar__actions {
+        gap: 10px;
+    }
+
+    .nav-btn {
+        width: 34px;
+        height: 34px;
+    }
+
+    .navbar__avatar {
+        width: 34px;
+        height: 34px;
+    }
+}
+
+/* Smartphones: show burger, keep actions visible but compact, keep single row */
+@media (max-width: 640px) {
+    :root { --navbar-height: 64px; }
+
+    .navbar {
+        padding: 0 10px;
+        flex-wrap: nowrap; /* keep one line */
+    }
+
+    .navbar__burger {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 10px;
+        border: 1px solid var(--sidebar-border, #313244);
+        background: var(--sidebar, #1e1e2e);
+        color: #fff;
+        margin-right: 8px; /* title to the right */
+        flex: 0 0 auto;
+    }
+
+    .navbar__left { gap: 8px; }
+
+    /* Keep only text for app name; hide icon to save space */
+    .navbar__logo { gap: 6px; min-width: 0; }
+    .navbar__logo svg { display: none; }
+    .navbar__logo span {
+        font-size: 1.02rem;
+        letter-spacing: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 52vw; /* ensure actions fit */
+    }
+
+    /* IMPORTANT: keep actions visible on mobile (don’t hide) */
+    .navbar__actions {
+        display: flex; /* override any previous hiding */
+        gap: 8px;
+    }
+
+    .nav-btn {
+        width: 32px;
+        height: 32px;
+    }
+
+    .navbar__avatar {
+        width: 32px;
+        height: 32px;
+        box-shadow: 0 3px 10px rgba(100, 108, 255, 0.3);
+    }
+}

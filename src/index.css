@@ -1,191 +1,555 @@
+/* index.css */
 @import "tailwindcss";
 @import "tw-animate-css";
 @plugin "tailwindcss-animate";
 
 @custom-variant dark (&:is(.dark *));
-@tailwind/preflight
+
+@tailwind/preflight;
 @tailwind utilities;
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+    --bg-secondary: #1e1e1e;
+    --modal-overlay-bg: rgba(0, 0, 0, 0.7);
+    --modal-bg: rgba(30, 30, 46, 0.98);
+    --modal-border: rgba(255, 255, 255, 0.1);
+    --modal-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(100, 108, 255, 0.2);
+    --modal-glow: rgba(100, 108, 255, 0.2);
+    --modal-inset-glow: rgba(255, 255, 255, 0.1);
+    --modal-divider: rgba(255, 255, 255, 0.08);
+    --modal-title-color: #ffffff;
+    --modal-subtitle-color: #a1a1aa;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+    /* SnippetsFilter Dark Theme Variables */
+    --filter-bg: rgba(30, 30, 46, 0.9);
+    --filter-border: rgba(255, 255, 255, 0.1);
+    --filter-shadow: rgba(0, 0, 0, 0.3);
+    --filter-inset: rgba(255, 255, 255, 0.05);
+    --filter-hover-shadow: rgba(0, 0, 0, 0.4);
+    --filter-hover-inset: rgba(255, 255, 255, 0.1);
+    --filter-glow: rgba(100, 108, 255, 0.5);
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+    /* Search Input Dark Theme */
+    --filter-input-border: rgba(255, 255, 255, 0.1);
+    --filter-input-bg: rgba(255, 255, 255, 0.05);
+    --filter-input-color: #ffffff;
+    --filter-input-placeholder: rgba(255, 255, 255, 0.4);
+    --filter-input-focus-border: rgba(100, 108, 255, 0.5);
+    --filter-input-focus-bg: rgba(100, 108, 255, 0.08);
+    --filter-input-focus-shadow: rgba(100, 108, 255, 0.2);
+    --filter-input-inset: rgba(255, 255, 255, 0.05);
+    --filter-input-hover-border: rgba(255, 255, 255, 0.2);
+    --filter-input-hover-bg: rgba(255, 255, 255, 0.07);
+
+    /* Icons and Labels Dark Theme */
+    --filter-icon-color: #a1a1aa;
+    --filter-icon-focus-color: #646cff;
+    --filter-label-color: #a1a1aa;
+
+    /* Clear Buttons Dark Theme */
+    --clear-button-bg: rgba(255, 255, 255, 0.05);
+    --clear-button-color: #a1a1aa;
+    --clear-button-hover-bg: rgba(239, 68, 68, 0.2);
+    --clear-button-hover-color: #f87171;
+
+    /* Select Components Dark Theme */
+    --filter-select-border: rgba(255, 255, 255, 0.1);
+    --filter-select-bg: rgba(255, 255, 255, 0.05);
+    --filter-select-color: #ffffff;
+    --filter-select-hover-border: rgba(255, 255, 255, 0.2);
+    --filter-select-hover-bg: rgba(255, 255, 255, 0.07);
+    --filter-select-focus-border: rgba(100, 108, 255, 0.5);
+    --filter-select-focus-bg: rgba(100, 108, 255, 0.08);
+    --filter-select-focus-shadow: rgba(100, 108, 255, 0.2);
+    --filter-select-inset: rgba(255, 255, 255, 0.05);
+
+    /* Dropdown Dark Theme */
+    --filter-dropdown-bg: rgba(30, 30, 46, 0.98);
+    --filter-dropdown-border: rgba(255, 255, 255, 0.1);
+    --filter-dropdown-shadow: rgba(0, 0, 0, 0.4);
+    --filter-dropdown-inset: rgba(255, 255, 255, 0.1);
+
+    /* Options Dark Theme */
+    --filter-option-color: #ffffff;
+    --filter-option-divider: rgba(255, 255, 255, 0.05);
+    --filter-option-hover-bg: rgba(100, 108, 255, 0.15);
+    --filter-option-hover-color: #ffffff;
+    --filter-option-selected-bg: rgba(100, 108, 255, 0.25);
+    --filter-option-selected-color: #a5b4fc;
+
+    /* Selected Items Dark Theme */
+    --selected-item-bg: rgba(100, 108, 255, 0.15);
+    --selected-item-border: rgba(100, 108, 255, 0.3);
+    --selected-item-color: #ffffff;
+
+    /* Remove Buttons Dark Theme */
+    --remove-button-color: #a1a1aa;
+    --remove-button-hover-bg: rgba(239, 68, 68, 0.2);
+    --remove-button-hover-color: #f87171;
+
+    /* Tags Dark Theme */
+    --selected-tag-bg: rgba(100, 108, 255, 0.2);
+    --selected-tag-color: #a5b4fc;
+    --selected-tag-border: rgba(100, 108, 255, 0.3);
+
+    /* Tag Categories Dark Theme */
+    --tag-category-bg: rgba(100, 108, 255, 0.2);
+    --tag-category-color: #a5b4fc;
+
+    /* Advanced Toggle Dark Theme */
+    --advanced-toggle-bg: rgba(255, 255, 255, 0.05);
+    --advanced-toggle-border: rgba(255, 255, 255, 0.1);
+    --advanced-toggle-color: #a1a1aa;
+    --advanced-toggle-hover-bg: rgba(100, 108, 255, 0.15);
+    --advanced-toggle-hover-border: rgba(100, 108, 255, 0.3);
+    --advanced-toggle-hover-color: #ffffff;
+
+    /* Clear Filters Button Dark Theme */
+    --clear-filters-bg: rgba(255, 255, 255, 0.05);
+    --clear-filters-border: rgba(255, 255, 255, 0.1);
+    --clear-filters-color: #a1a1aa;
+    --clear-filters-hover-bg: rgba(239, 68, 68, 0.1);
+    --clear-filters-hover-border: rgba(239, 68, 68, 0.3);
+    --clear-filters-hover-color: #ef4444;
+
+    /* Loading Indicators Dark Theme */
+    --filter-loading-color: #a1a1aa;
+    --filter-spinner-track: rgba(255, 255, 255, 0.1);
+    --filter-spinner-color: #646cff;
+
+    /* Active Filter Indicator */
+    --filter-active-indicator: #10b981;
+
+    /* Form Dark Theme */
+    --form-label-color: #ffffff;
+    --form-label-dot: #646cff;
+    --input-border: rgba(255, 255, 255, 0.1);
+    --input-bg: rgba(255, 255, 255, 0.05);
+    --input-color: #ffffff;
+    --input-placeholder: rgba(255, 255, 255, 0.3);
+    --input-focus-border: rgba(100, 108, 255, 0.5);
+    --input-focus-bg: rgba(100, 108, 255, 0.08);
+    --input-focus-shadow: rgba(100, 108, 255, 0.2);
+    --input-inset-shadow: rgba(255, 255, 255, 0.05);
+    --input-hover-border: rgba(255, 255, 255, 0.2);
+    --input-hover-bg: rgba(255, 255, 255, 0.07);
+    --input-disabled-bg: rgba(255, 255, 255, 0.03);
+
+    /* Scrollbar Dark Theme */
+    --scrollbar-track: rgba(255, 255, 255, 0.05);
+    --scrollbar-thumb: rgba(100, 108, 255, 0.5);
+    --scrollbar-thumb-hover: rgba(100, 108, 255, 0.7);
+
+    /* Buttons Dark Theme */
+    --close-button-bg: rgba(255, 255, 255, 0.05);
+    --close-button-border: rgba(255, 255, 255, 0.1);
+    --close-button-color: #ffffff;
+    --close-button-hover-bg: rgba(239, 68, 68, 0.1);
+    --close-button-hover-border: rgba(239, 68, 68, 0.3);
+    --close-button-hover-color: #ef4444;
+    --close-button-hover-shadow: rgba(239, 68, 68, 0.2);
+
+    --button-glow: rgba(255, 255, 255, 0.2);
+    --primary-button-bg: #646cff;
+    --primary-button-color: white;
+    --primary-button-shadow: 0 4px 15px rgba(100, 108, 255, 0.3);
+    --primary-button-hover-shadow: 0 6px 20px rgba(100, 108, 255, 0.4), 0 0 0 1px rgba(100, 108, 255, 0.2);
+    --primary-button-hover-border: rgba(100, 108, 255, 0.3);
+
+    --secondary-button-bg: rgba(255, 255, 255, 0.05);
+    --secondary-button-border: rgba(255, 255, 255, 0.1);
+    --secondary-button-color: #ffffff;
+    --secondary-button-hover-bg: rgba(255, 255, 255, 0.1);
+    --secondary-button-hover-border: rgba(255, 255, 255, 0.2);
+
+    --edit-button-bg: #3b82f6;
+    --edit-button-color: white;
+    --edit-button-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    --edit-button-hover-bg: #2563eb;
+    --edit-button-hover-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+
+    /* Tags Dark Theme */
+    --tag-bg: rgba(100, 108, 255, 0.2);
+    --tag-color: #a5b4fc;
+    --tag-border: rgba(100, 108, 255, 0.3);
+
+    /* Loading & Error Dark Theme */
+    --loading-overlay: rgba(0, 0, 0, 0.7);
+    --spinner-track: rgba(255, 255, 255, 0.1);
+    --spinner-color: #646cff;
+    --error-color: #f87171;
+    --error-border: rgba(248, 113, 113, 0.5);
+
+    /* Other */
+    --hint-color: #a1a1aa;
+    --actions-divider: rgba(255, 255, 255, 0.08);
+    /* Основные цвета темы (темная) */
+    --background: #0f0f1a;
+    --foreground: #ffffff;
+    --card: #1e1e2e;
+    --card-foreground: #ffffff;
+    --popover: #1e1e2e;
+    --popover-foreground: #ffffff;
+    --primary: #646cff;
+    --primary-foreground: #ffffff;
+    --secondary: #2a2a3e;
+    --secondary-foreground: #ffffff;
+    --muted: #2a2a3e;
+    --muted-foreground: #a1a1aa;
+    --accent: #2a2a3e;
+    --accent-foreground: #ffffff;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #313244;
+    --input: #2a2a3e;
+    --ring: #646cff;
+
+    /* Sidebar colors */
+    --sidebar: #1e1e2e;
+    --sidebar-dark: #11111b;
+    --sidebar-light: #2a2a3e;
+    --sidebar-border: #313244;
+    --sidebar-accent: #45475a;
+    --sidebar-foreground: #cdd6f4;
+
+    /* Sizes */
+    --sidebar-width: 260px;
+    --sidebar-width-collapsed: 70px;
+    --navbar-height: 72px;
+
+    @media (max-width: 640px) {
+        :root {
+            --navbar-height: 64px;
+        }
+    }
+
+    /* Radii */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius: 12px;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, #646cff, #9a4dff);
+    --gradient-dark: linear-gradient(135deg, #1e1e2e, #11111b);
+
+    /* Glass effect */
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.1);
+
+    /* Шрифты */
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    /* Code block tokens (dark theme) */
+    --code-bg: #0b0e14; /* тёмный фон редактора/кода */
+    --code-color: #e6edf3; /* основной цвет текста кода */
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+/* Светлая тема */
+.light {
+    --bg-secondary: #f5f5f5;
+    /* SnippetsFilter Light Theme Variables */
+    --filter-bg: rgba(255, 255, 255, 0.9);
+    --filter-border: rgba(0, 0, 0, 0.1);
+    --filter-shadow: rgba(0, 0, 0, 0.08);
+    --filter-inset: rgba(255, 255, 255, 0.5);
+    --filter-hover-shadow: rgba(0, 0, 0, 0.12);
+    --filter-hover-inset: rgba(255, 255, 255, 0.6);
+    --filter-glow: rgba(100, 108, 255, 0.3);
+
+    /* Search Input Light Theme */
+    --filter-input-border: rgba(0, 0, 0, 0.15);
+    --filter-input-bg: rgba(0, 0, 0, 0.03);
+    --filter-input-color: #1e293b;
+    --filter-input-placeholder: rgba(0, 0, 0, 0.4);
+    --filter-input-focus-border: #646cff;
+    --filter-input-focus-bg: rgba(100, 108, 255, 0.05);
+    --filter-input-focus-shadow: rgba(100, 108, 255, 0.1);
+    --filter-input-inset: rgba(0, 0, 0, 0.05);
+    --filter-input-hover-border: rgba(0, 0, 0, 0.2);
+    --filter-input-hover-bg: rgba(0, 0, 0, 0.02);
+
+    /* Icons and Labels Light Theme */
+    --filter-icon-color: #64748b;
+    --filter-icon-focus-color: #646cff;
+    --filter-label-color: #64748b;
+
+    /* Clear Buttons Light Theme */
+    --clear-button-bg: rgba(0, 0, 0, 0.05);
+    --clear-button-color: #64748b;
+    --clear-button-hover-bg: rgba(239, 68, 68, 0.1);
+    --clear-button-hover-color: #ef4444;
+
+    /* Select Components Light Theme */
+    --filter-select-border: rgba(0, 0, 0, 0.15);
+    --filter-select-bg: rgba(0, 0, 0, 0.03);
+    --filter-select-color: #1e293b;
+    --filter-select-hover-border: rgba(0, 0, 0, 0.2);
+    --filter-select-hover-bg: rgba(0, 0, 0, 0.02);
+    --filter-select-focus-border: #646cff;
+    --filter-select-focus-bg: rgba(100, 108, 255, 0.05);
+    --filter-select-focus-shadow: rgba(100, 108, 255, 0.1);
+    --filter-select-inset: rgba(0, 0, 0, 0.05);
+
+    /* Dropdown Light Theme */
+    --filter-dropdown-bg: rgba(255, 255, 255, 0.98);
+    --filter-dropdown-border: rgba(0, 0, 0, 0.1);
+    --filter-dropdown-shadow: rgba(0, 0, 0, 0.15);
+    --filter-dropdown-inset: rgba(255, 255, 255, 0.5);
+
+    /* Options Light Theme */
+    --filter-option-color: #334155;
+    --filter-option-divider: rgba(0, 0, 0, 0.05);
+    --filter-option-hover-bg: rgba(100, 108, 255, 0.08);
+    --filter-option-hover-color: #1e293b;
+    --filter-option-selected-bg: rgba(100, 108, 255, 0.12);
+    --filter-option-selected-color: #4f46e5;
+
+    /* Selected Items Light Theme */
+    --selected-item-bg: rgba(100, 108, 255, 0.08);
+    --selected-item-border: rgba(100, 108, 255, 0.15);
+    --selected-item-color: #1e293b;
+
+    /* Remove Buttons Light Theme */
+    --remove-button-color: #64748b;
+    --remove-button-hover-bg: rgba(239, 68, 68, 0.1);
+    --remove-button-hover-color: #ef4444;
+
+    /* Tags Light Theme */
+    --selected-tag-bg: rgba(100, 108, 255, 0.1);
+    --selected-tag-color: #4f46e5;
+    --selected-tag-border: rgba(100, 108, 255, 0.2);
+
+    /* Tag Categories Light Theme */
+    --tag-category-bg: rgba(100, 108, 255, 0.1);
+    --tag-category-color: #4f46e5;
+
+    /* Advanced Toggle Light Theme */
+    --advanced-toggle-bg: rgba(0, 0, 0, 0.03);
+    --advanced-toggle-border: rgba(0, 0, 0, 0.1);
+    --advanced-toggle-color: #64748b;
+    --advanced-toggle-hover-bg: rgba(100, 108, 255, 0.08);
+    --advanced-toggle-hover-border: rgba(100, 108, 255, 0.2);
+    --advanced-toggle-hover-color: #1e293b;
+
+    /* Clear Filters Button Light Theme */
+    --clear-filters-bg: rgba(0, 0, 0, 0.05);
+    --clear-filters-border: rgba(0, 0, 0, 0.1);
+    --clear-filters-color: #64748b;
+    --clear-filters-hover-bg: rgba(239, 68, 68, 0.1);
+    --clear-filters-hover-border: rgba(239, 68, 68, 0.3);
+    --clear-filters-hover-color: #ef4444;
+
+    /* Loading Indicators Light Theme */
+    --filter-loading-color: #64748b;
+    --filter-spinner-track: rgba(0, 0, 0, 0.1);
+    --filter-spinner-color: #646cff;
+
+    /* Active Filter Indicator */
+    --filter-active-indicator: #10b981;
+
+
+    --modal-overlay-bg: rgba(0, 0, 0, 0.5);
+    --modal-bg: rgba(255, 255, 255, 0.98);
+    --modal-border: rgba(0, 0, 0, 0.1);
+    --modal-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    --modal-glow: rgba(100, 108, 255, 0.1);
+    --modal-inset-glow: rgba(255, 255, 255, 0.9);
+    --modal-divider: rgba(0, 0, 0, 0.08);
+    --modal-title-color: #1e293b;
+    --modal-subtitle-color: #64748b;
+
+    /* Form Light Theme */
+    --form-label-color: #334155;
+    --form-label-dot: #646cff;
+    --input-border: rgba(0, 0, 0, 0.15);
+    --input-bg: rgba(0, 0, 0, 0.03);
+    --input-color: #1e293b;
+    --input-placeholder: rgba(0, 0, 0, 0.4);
+    --input-focus-border: #646cff;
+    --input-focus-bg: rgba(100, 108, 255, 0.05);
+    --input-focus-shadow: rgba(100, 108, 255, 0.1);
+    --input-inset-shadow: rgba(0, 0, 0, 0.05);
+    --input-hover-border: rgba(0, 0, 0, 0.2);
+    --input-hover-bg: rgba(0, 0, 0, 0.02);
+    --input-disabled-bg: rgba(0, 0, 0, 0.01);
+
+    /* Scrollbar Light Theme */
+    --scrollbar-track: rgba(0, 0, 0, 0.05);
+    --scrollbar-thumb: rgba(100, 108, 255, 0.4);
+    --scrollbar-thumb-hover: rgba(100, 108, 255, 0.6);
+
+    /* Buttons Light Theme */
+    --close-button-bg: rgba(0, 0, 0, 0.05);
+    --close-button-border: rgba(0, 0, 0, 0.1);
+    --close-button-color: #64748b;
+    --close-button-hover-bg: rgba(239, 68, 68, 0.1);
+    --close-button-hover-border: rgba(239, 68, 68, 0.3);
+    --close-button-hover-color: #ef4444;
+    --close-button-hover-shadow: rgba(239, 68, 68, 0.2);
+
+    --button-glow: rgba(255, 255, 255, 0.3);
+    --primary-button-bg: #646cff;
+    --primary-button-color: white;
+    --primary-button-shadow: 0 4px 15px rgba(100, 108, 255, 0.25);
+    --primary-button-hover-shadow: 0 6px 20px rgba(100, 108, 255, 0.35), 0 0 0 1px rgba(100, 108, 255, 0.2);
+    --primary-button-hover-border: rgba(100, 108, 255, 0.3);
+
+    --secondary-button-bg: rgba(0, 0, 0, 0.05);
+    --secondary-button-border: rgba(0, 0, 0, 0.1);
+    --secondary-button-color: #475569;
+    --secondary-button-hover-bg: rgba(0, 0, 0, 0.1);
+    --secondary-button-hover-border: rgba(0, 0, 0, 0.2);
+
+    --edit-button-bg: #3b82f6;
+    --edit-button-color: white;
+    --edit-button-shadow: 0 4px 15px rgba(59, 130, 246, 0.25);
+    --edit-button-hover-bg: #2563eb;
+    --edit-button-hover-shadow: 0 6px 20px rgba(59, 130, 246, 0.35);
+
+    /* Tags Light Theme */
+    --tag-bg: rgba(100, 108, 255, 0.1);
+    --tag-color: #4f46e5;
+    --tag-border: rgba(100, 108, 255, 0.2);
+
+    /* Loading & Error Light Theme */
+    --loading-overlay: rgba(255, 255, 255, 0.9);
+    --spinner-track: rgba(0, 0, 0, 0.1);
+    --spinner-color: #646cff;
+    --error-color: #dc2626;
+    --error-border: rgba(220, 38, 38, 0.5);
+
+    /* Other */
+    --hint-color: #64748b;
+    --actions-divider: rgba(0, 0, 0, 0.08);
+    --background: #f8fafc;
+    --foreground: #1e293b;
+    --card: #ffffff;
+    --card-foreground: #1e293b;
+    --popover: #ffffff;
+    --popover-foreground: #1e293b;
+    --primary: #141eea;
+    --primary-foreground: #ffffff;
+    --secondary: #f1f5f9;
+    --secondary-foreground: #1e293b;
+    --muted: #f1f5f9;
+    --muted-foreground: #64748b;
+    --accent: #f1f5f9;
+    --accent-foreground: #1e293b;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #e2e8f0;
+    --input: #ffffff;
+    --ring: #646cff;
+
+    /* Sidebar light */
+    --sidebar: #ffffff;
+    --sidebar-dark: #f1f5f9;
+    --sidebar-light: #f8fafc;
+    --sidebar-border: #e2e8f0;
+    --sidebar-accent: #f1f5f9;
+    --sidebar-foreground: #475569;
+
+
 }
-a:hover {
-  color: #535bf2;
+
+/* Code block tokens (light theme) */
+.light {
+    --code-bg: #f6f8fa; /* светлый фон редактора/кода */
+    --code-color: #1f2937; /* основной цвет текста кода */
 }
 
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    width: 100%;
+    background-color: var(--background);
+    color: var(--foreground);
+    overflow-x: hidden;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-
-@theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+#root {
+    width: 100%;
+    min-height: 100vh;
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+    * {
+        @apply border-border outline-ring/50;
+        box-sizing: border-box;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
+}
+
+@theme inline {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent: var(--sidebar-accent);
+
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+
+    --radius-sm: var(--radius-sm);
+    --radius-md: var(--radius-md);
+    --radius-lg: var(--radius-lg);
+    --radius: var(--radius);
+
+    --animate-spin: spin 1s linear infinite;
+}
+
+
+:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+}
+
+::selection {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+
+.disable-transitions *,
+.disable-transitions *::before,
+.disable-transitions *::after {
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Опционально: более быстрый переход цвета для основных контейнеров */
+html[data-theme='dark'], html[data-theme='light'] {
+    transition: background-color 120ms ease, color 120ms ease;
 }

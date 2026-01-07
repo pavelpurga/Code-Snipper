@@ -1,0 +1,10 @@
+.error-page{min-height:calc(100vh - var(--navbar-height,72px));display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,var(--background,#0f0f14),var(--sidebar-dark,#11111b))}
+.error-card{max-width:520px;width:calc(100% - 32px);border:1px solid var(--modal-border,#2a2a35);border-radius:16px;background:var(--modal-bg,rgba(0,0,0,0.15));backdrop-filter:blur(6px);padding:24px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.error-emoji{font-size:48px;margin-bottom:8px}
+.error-title{font-size:22px;font-weight:800;margin:4px 0 8px}
+.error-desc{color:var(--muted-foreground,#a1a1aa);margin-bottom:16px}
+.error-actions{display:flex;gap:10px;justify-content:center}
+.error-btn{padding:10px 14px;border-radius:12px;border:1px solid var(--border,#2a2a35);background:transparent;color:var(--foreground,#e7e7ea);cursor:pointer}
+.error-btn--primary{border-color:color-mix(in oklab,#646cff 50%, var(--border,#2a2a35));background:color-mix(in oklab,#646cff 12%, var(--background,#0f0f14))}
+.error-btn--ghost{border-color:var(--border,#2a2a35)}
+

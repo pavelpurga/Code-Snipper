@@ -1,0 +1,196 @@
+/* MultiSelect unified styles */
+.multiselect-container,
+.relative {
+  position: relative;
+}
+
+.multiselect-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid var(--input-border, rgba(0,0,0,0.15));
+  background: var(--input-bg, rgba(0,0,0,0.05));
+  color: var(--input-color, var(--foreground));
+  font-size: 0.95rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.multiselect-trigger:hover {
+  border-color: var(--input-hover-border, rgba(0,0,0,0.25));
+  background: var(--input-hover-bg, rgba(0,0,0,0.07));
+}
+
+.multiselect-trigger:focus-visible {
+  border-color: var(--input-focus-border, var(--primary));
+  box-shadow: 0 0 0 3px var(--input-focus-shadow, rgba(100,108,255,0.12));
+}
+
+.multiselect-trigger .truncate {
+  max-width: calc(100% - 22px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Dropdown */
+.multiselect-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 8px;
+  transform-origin: top center;
+  max-height: 240px;
+  overflow-y: auto;
+  background-color: var(--modal-bg, #ffffff);
+  border: 1px solid var(--modal-border, rgba(0,0,0,0.12));
+  box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+  z-index: auto;
+  pointer-events: auto;
+}
+
+/* Upward modifier */
+.open-up .multiselect-dropdown {
+  top: auto;
+  bottom: 100%;
+  margin-top: 0;
+  margin-bottom: 8px;
+  transform-origin: bottom center;
+}
+
+/* Options */
+.multiselect-option {
+  position: relative;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  cursor: pointer;
+}
+
+.multiselect-option:hover {
+  background: rgba(100,108,255,0.08);
+}
+
+.multiselect-option.active {
+  background: rgba(100,108,255,0.12);
+  color: #3745ff;
+  font-weight: 600;
+}
+
+.multiselect-option svg {
+  flex-shrink: 0;
+  color: var(--primary, #646cff);
+}
+
+/* Explicit chip instead of ::before to avoid overlaps */
+.multiselect-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  padding: 0 6px;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 6px;
+  color: #646cff;
+  background: rgba(100,108,255,0.12);
+}
+
+.multiselect-label {
+  line-height: 1.2;
+}
+
+/* Badge with counter */
+.multiselect-badge-container {
+  position: absolute;
+  right: -8px;
+  top: -8px;
+  display: inline-block;
+}
+
+.multiselect-badge {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--primary, #646cff);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(100,108,255,0.35);
+  cursor: default;
+}
+
+.multiselect-badge-tooltip {
+  position: absolute;
+  top: 28px;
+  right: 0;
+  background: var(--modal-bg, #ffffff);
+  border: 1px solid var(--modal-border, rgba(0,0,0,0.12));
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+  padding: 8px 10px;
+  min-width: 220px;
+  z-index: 10002;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.multiselect-badge-container:hover .multiselect-badge-tooltip {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.multiselect-badge-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted-foreground);
+  margin-bottom: 6px;
+}
+
+.multiselect-badge-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.multiselect-badge-item {
+  font-size: 13px;
+  color: var(--foreground);
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.multiselect-badge-item:last-child {
+  border-bottom: none;
+}
+
+/* Убираем общий высокий z-index по умолчанию */
+.multiselect-dropdown {
+  z-index: auto;
+}
+
+/* Поднимаем только активный контейнер с открытым дропдауном */
+.multiselect-container.is-open { z-index: 10010; position: relative; }
+.multiselect-container.is-open .multiselect-dropdown { z-index: 10011; }
+
+/* На мобильных гарантируем приоритет активного селектора */
+@media (max-width: 1024px) {
+  .multiselect-container { position: relative; }
+  .multiselect-container.is-open { z-index: 10020; }
+  .multiselect-container.is-open .multiselect-dropdown { z-index: 10021; }
+}

@@ -1,0 +1,524 @@
+/* SnippetModal.css */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--modal-overlay-bg, rgba(0, 0, 0, 0.7));
+    backdrop-filter: blur(8px);
+    z-index: 22000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    animation: fadeIn 0.3s ease-out;
+
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-container {
+    top: 30px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 85vh;
+    background: var(--modal-bg, rgba(255, 255, 255, 0.98));
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid var(--modal-border, rgba(0, 0, 0, 0.1));
+    box-shadow: var(--modal-shadow,
+    0 20px 60px rgba(0, 0, 0, 0.15),
+    0 0 0 1px var(--modal-glow, rgba(100, 108, 255, 0.1)),
+    inset 0 1px 0 var(--modal-inset-glow, rgba(255, 255, 255, 0.1)));
+    position: relative;
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    z-index: 22010;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Header */
+.modal-header {
+    padding: 1.5rem 1.5rem 1rem;
+    border-bottom: 1px solid var(--modal-divider, rgba(0, 0, 0, 0.08));
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 0;
+    color: var(--modal-title-color, var(--foreground));
+    letter-spacing: -0.5px;
+}
+
+.modal-subtitle {
+    font-size: 0.875rem;
+    color: var(--modal-subtitle-color, var(--muted-foreground));
+    margin-top: 0.5rem;
+    font-weight: 400;
+}
+
+.close-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--close-button-bg, rgba(0, 0, 0, 0.05));
+    border: 1px solid var(--close-button-border, rgba(0, 0, 0, 0.1));
+    border-radius: 10px;
+    color: var(--close-button-color, var(--foreground));
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+.close-button:hover {
+    background: var(--close-button-hover-bg, rgba(239, 68, 68, 0.1));
+    border-color: var(--close-button-hover-border, rgba(239, 68, 68, 0.3));
+    color: var(--close-button-hover-color, #ef4444);
+    transform: rotate(90deg);
+    box-shadow: 0 4px 12px var(--close-button-hover-shadow, rgba(239, 68, 68, 0.2));
+}
+
+/* Form */
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    flex: 1;
+    padding: 1rem 1.5rem 1.5rem;
+    position: relative;
+    z-index: 1;
+    min-height: 0;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    position: relative;
+    overflow: visible;
+    margin-bottom: 12px; /* небольшой отступ между полями */
+}
+
+.form-group:last-child {
+    margin-bottom: 0; /* у последнего поля убираем отступ */
+}
+
+.form-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--form-label-color, var(--foreground));
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-label::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--form-label-dot, var(--primary));
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.875rem;
+    border-radius: 10px;
+    border: 1px solid var(--input-border, rgba(0, 0, 0, 0.1));
+    background: var(--input-bg, rgba(0, 0, 0, 0.05));
+    color: var(--input-color, var(--foreground));
+    font-size: 0.95rem;
+    font-family: inherit;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+}
+
+.form-input::placeholder {
+    color: var(--input-placeholder, rgba(0, 0, 0, 0.4));
+    font-weight: 300;
+}
+
+.form-input:focus {
+    border-color: var(--input-focus-border, var(--primary));
+    background: var(--input-focus-bg, rgba(100, 108, 255, 0.05));
+    box-shadow:
+            0 0 0 3px var(--input-focus-shadow, rgba(100, 108, 255, 0.1)),
+            inset 0 1px 2px var(--input-inset-shadow, rgba(0, 0, 0, 0.05));
+    transform: translateY(-1px);
+}
+
+.form-input:hover:not(:focus):not(:disabled) {
+    border-color: var(--input-hover-border, rgba(0, 0, 0, 0.2));
+    background: var(--input-hover-bg, rgba(0, 0, 0, 0.03));
+}
+
+.form-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--input-disabled-bg, rgba(0, 0, 0, 0.02));
+}
+
+
+/* Code editor container */
+.code-editor {
+    width: 100%;
+    min-height: clamp(140px, 24vh, 280px);
+    border-radius: 10px;
+    border: 1px solid var(--input-border, rgba(0, 0, 0, 0.1));
+    background: var(--input-bg, rgba(0, 0, 0, 0.05));
+    color: var(--input-color, var(--foreground));
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    overflow: auto;
+}
+.code-editor:focus-within {
+    border-color: var(--input-focus-border, var(--primary));
+    background: var(--input-focus-bg, rgba(100, 108, 255, 0.05));
+    box-shadow:
+        0 0 0 3px var(--input-focus-shadow, rgba(100, 108, 255, 0.1)),
+        inset 0 1px 2px var(--input-inset-shadow, rgba(0, 0, 0, 0.05));
+}
+.code-editor:hover:not(:focus-within) {
+    border-color: var(--input-hover-border, rgba(0, 0, 0, 0.2));
+    background: var(--input-hover-bg, rgba(0, 0, 0, 0.03));
+}
+/* normalize inner editor nodes */
+.code-editor textarea,
+.code-editor pre,
+.code-editor code {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    background: transparent !important;
+    color: var(--code-color, var(--input-color)) !important;
+}
+
+/* Textarea (description) */
+.form-textarea {
+    width: 100%;
+    min-height: 140px;
+    padding: 0.875rem;
+    border-radius: 10px;
+    border: 1px solid var(--input-border, rgba(0, 0, 0, 0.1));
+    background: var(--input-bg, rgba(0, 0, 0, 0.05));
+    color: var(--input-color, var(--foreground));
+    font-size: 0.95rem;
+    font-family: inherit;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+    resize: vertical;
+}
+.form-textarea::placeholder {
+    color: var(--input-placeholder, rgba(0, 0, 0, 0.4));
+    font-weight: 300;
+}
+.form-textarea:focus {
+    border-color: var(--input-focus-border, var(--primary));
+    background: var(--input-focus-bg, rgba(100, 108, 255, 0.05));
+    box-shadow:
+        0 0 0 3px var(--input-focus-shadow, rgba(100, 108, 255, 0.1)),
+        inset 0 1px 2px var(--input-inset-shadow, rgba(0, 0, 0, 0.05));
+    transform: translateY(-1px);
+}
+.form-textarea:hover:not(:focus):not(:disabled) {
+    border-color: var(--input-hover-border, rgba(0, 0, 0, 0.2));
+    background: var(--input-hover-bg, rgba(0, 0, 0, 0.03));
+}
+.form-textarea:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: var(--input-disabled-bg, rgba(0, 0, 0, 0.02));
+}
+
+/* Grid for fields */
+.field-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+/* Action buttons */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--actions-divider, rgba(0, 0, 0, 0.08));
+    flex-shrink: 0;
+}
+
+.action-button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    position: relative;
+    overflow: hidden;
+    min-height: 44px;
+}
+
+.action-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+    transparent,
+    var(--button-glow, rgba(255, 255, 255, 0.2)),
+    transparent);
+    transition: left 0.6s ease;
+}
+
+.action-button:hover::before {
+    left: 100%;
+}
+
+/* Primary button */
+.primary-button {
+    background: var(--primary-button-bg, var(--primary));
+    color: var(--primary-button-color, white);
+    box-shadow: var(--primary-button-shadow, 0 4px 15px rgba(100, 108, 255, 0.3));
+}
+
+.primary-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--primary-button-hover-shadow,
+    0 6px 20px rgba(100, 108, 255, 0.4),
+    0 0 0 1px var(--primary-button-hover-border, rgba(100, 108, 255, 0.2)));
+}
+
+.primary-button:active {
+    transform: translateY(0);
+}
+
+.primary-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Secondary button */
+.secondary-button {
+    background: var(--secondary-button-bg, rgba(0, 0, 0, 0.05));
+    border: 1px solid var(--secondary-button-border, rgba(0, 0, 0, 0.1));
+    color: var(--secondary-button-color, var(--foreground));
+}
+
+.secondary-button:hover {
+    background: var(--secondary-button-hover-bg, rgba(0, 0, 0, 0.1));
+    border-color: var(--secondary-button-hover-border, rgba(0, 0, 0, 0.2));
+    transform: translateY(-2px);
+}
+
+/* Edit button */
+.edit-button {
+    background: var(--edit-button-bg, #3b82f6);
+    color: var(--edit-button-color, white);
+    box-shadow: var(--edit-button-shadow, 0 4px 15px rgba(59, 130, 246, 0.3));
+}
+
+.edit-button:hover {
+    background: var(--edit-button-hover-bg, #2563eb);
+    box-shadow: var(--edit-button-hover-shadow, 0 6px 20px rgba(59, 130, 246, 0.4));
+}
+
+/* Tags preview */
+.tags-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.tag-preview-item {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    background: var(--tag-bg, rgba(100, 108, 255, 0.1));
+    color: var(--tag-color, #646cff);
+    border-radius: 100px;
+    border: 1px solid var(--tag-border, rgba(100, 108, 255, 0.2));
+    transition: all 0.2s ease;
+}
+
+.tag-preview-item:hover {
+    transform: translateY(-1px);
+}
+
+/* Loading state */
+.form-loading {
+    position: absolute;
+    inset: 0;
+    background: var(--loading-overlay, rgba(0, 0, 0, 0.7));
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    border-radius: 20px;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--spinner-track, rgba(0, 0, 0, 0.1));
+    border-top-color: var(--spinner-color, #646cff);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Error styling */
+.text-red-400 {
+    color: var(--error-color, #ef4444);
+}
+
+.border-red-500\/50 {
+    border-color: var(--error-border, rgba(239, 68, 68, 0.5));
+}
+
+/* Hint row */
+.hint-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.hint-text {
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
+}
+
+/* New styles for label and hint text alignment */
+.form-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.form-label-row .hint-text {
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .modal-container {
+        max-width: 95vw;
+        max-height: 90vh;
+        border-radius: 16px;
+    }
+
+    .modal-header {
+        padding: 1.25rem 1.25rem 0.75rem;
+    }
+
+    .modal-form {
+        padding: 1rem 1.25rem 1.25rem;
+    }
+
+    .modal-title {
+        font-size: 1.25rem;
+    }
+
+    .form-input {
+        padding: 0.75rem;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .action-button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Мобильные: компоновка и safe-area + гарантированный зазор от верхнего/нижнего краёв */
+@media (max-width: 767px) {
+    .modal-overlay {
+        /* Вместо центрирования — выравниваем сверху, даём паддинги от навбара/нижней границы */
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding-top: calc(env(safe-area-inset-top) + var(--navbar-height) + 10px);
+        padding-bottom: calc(env(safe-area-inset-bottom) + 16px);
+        padding-left: 12px;
+        padding-right: 12px;
+        box-sizing: border-box;
+    }
+    .modal-container {
+        top: 0; /* убираем фиксированный отступ сверху на мобилке */
+        margin: 0; /* зазоры управляются overlay padding */
+        width: 100%;
+        max-width: 100%;
+        /* Высота контейнера с учётом паддингов overlay, чтобы низ не «зажёвывался» */
+        max-height: calc(100vh - (env(safe-area-inset-top) + var(--navbar-height) + 10px) - (env(safe-area-inset-bottom) + 16px));
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    .modal-form {
+        /* Добавим небольшой внутренний отступ снизу, чтобы кнопки не прижимались к краю */
+        padding: 0.75rem 1rem 1.25rem;
+    }
+    .close-button { z-index: 3; }
+}
+
+/* Очень узкие экраны: почти fullscreen модалка */
+@media (max-width: 380px) {
+    .modal-container {
+        top: 0;
+        border-radius: 10px;
+        max-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    }
+    .modal-title { font-size: 1.1rem; }
+    .form-input, .form-textarea { font-size: 0.9rem; }
+}
+
+/* Предпочтение минимальной анимации: отключаем лишние переходы */
+@media (prefers-reduced-motion: reduce) {
+    .modal-overlay, .modal-container, .action-button, .close-button, .form-input, .form-textarea, .code-editor { animation: none !important; transition: none !important; }
+}

@@ -1,0 +1,21 @@
+/* User Profile Page wrapper + Back button */
+.user-profile { padding: 16px; }
+.user-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--modal-border, rgba(0,0,0,0.15));
+  background: var(--modal-bg, rgba(0,0,0,0.03));
+  color: var(--foreground, #1f2937);
+  cursor: pointer;
+}
+.user-back:hover { background: rgba(100,108,255,0.06); }
+
+/* Перенесённые стили:
+   - header -> UserHeader.css
+   - filters -> UserFilters.css
+   - snippets -> UserSnippets.css
+*/

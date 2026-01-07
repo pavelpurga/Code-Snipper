@@ -1,0 +1,65 @@
+{
+  "edit": "Редактировать",
+  "update": "Обновить",
+  "save": "Сохранить",
+  "close": "Закрыть",
+  "cancel": "Отмена",
+  "delete": "Удалить",
+  "copy": "Копировать",
+  "confirm": "Подтвердить",
+  "yes": "Да",
+  "no": "Нет",
+
+  "filters": {
+    "create_filter": "Создать фильтр",
+    "clear": "Очистить",
+    "search_placeholder": "Поиск сниппетов...",
+    "language": "Язык",
+    "tags": "Теги",
+    "all_languages": "Все языки",
+    "all_tags": "Все теги",
+    "user_search_placeholder": "Поиск сниппетов пользователя...",
+    "hint": "Возможно вам это поможет..."
+  },
+  "sidebar": {
+    "snippets": "Сниппеты",
+    "favorites": "Избранное",
+    "social": "Сообщество",
+    "about": "О нас",
+    "logout": "Выйти",
+    "contacts": "Контакты",
+    "expand": "Раскрыть",
+    "collapse": "Свернуть"
+  },
+  "user": {
+    "back_to_community": "Назад к сообществу"
+  },
+  "toasts": {
+    "copied": "Код скопирован",
+    "deleted": "Сниппет удалён",
+    "added_favorite": "Сниппет добавлен в избранное",
+    "removed_favorite": "Сниппет удалён из избранного",
+    "error": "Что-то пошло не так"
+  },
+  "confirmations": {
+    "delete_snippet_title": "Удалить сниппет?",
+    "delete_snippet_text": "Это действие нельзя отменить.",
+    "logout_title": "Выйти из аккаунта?",
+    "logout_text": "Вы уверены, что хотите выйти?"
+  },
+  "social": {
+    "developer_type": "Тип разработчика",
+    "developer_types": {
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "fullstack": "Fullstack",
+      "devops": "DevOps",
+      "mobile": "Mobile",
+      "data": "Data",
+      "qa": "QA",
+      "pm": "Product Manager",
+      "designer": "Designer",
+      "other": "Другой"
+    }
+  }
+}
