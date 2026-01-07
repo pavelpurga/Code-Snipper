@@ -50,18 +50,28 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
+      - name: Check deploy key
+        id: check-deploy-key
+        run: |
+          if [ -z "${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}" ]; then
+            echo "No SSH deploy key found in secrets, skipping deploy steps."
+            echo "deploy=false" >> $GITHUB_OUTPUT
+          else
+            echo "deploy=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: Install ssh client
-        if: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY != '' }}
+        if: ${{ steps.check-deploy-key.outputs.deploy == 'true' }}
         run: sudo apt-get update && sudo apt-get install -y openssh-client
 
       - name: Start ssh-agent
-        if: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY != '' }}
+        if: ${{ steps.check-deploy-key.outputs.deploy == 'true' }}
         uses: webfactory/ssh-agent@v0.8.1
         with:
           ssh-private-key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
 
       - name: Remote deploy via SSH
-        if: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY != '' }}
+        if: ${{ steps.check-deploy-key.outputs.deploy == 'true' }}
         env:
           IMAGE: ${{ needs.build-and-push.outputs.image }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
@@ -85,4 +95,3 @@ jobs:
   #   steps:
   #     - name: Cleanup placeholder
   #       run: echo 'Implement image cleanup if needed'
-
