@@ -42,6 +42,11 @@ jobs:
             IMAGE_NAME="ghcr.io/${GITHUB_REPOSITORY}"
             echo "IMAGE_NAME not provided in secrets, falling back to ${IMAGE_NAME}"
           fi
+
+          # Normalize IMAGE_NAME to lowercase (GHCR requires lowercase repo names)
+          IMAGE_NAME="$(echo "${IMAGE_NAME}" | tr '[:upper:]' '[:lower:]')"
+          echo "Normalized IMAGE_NAME=${IMAGE_NAME}"
+
           # image tagged by sha and latest
           SHA_TAG=${GITHUB_SHA::8}
           IMAGE=${IMAGE_NAME}:${SHA_TAG}
