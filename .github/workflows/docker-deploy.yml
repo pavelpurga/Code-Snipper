@@ -37,9 +37,15 @@ jobs:
           IMAGE_NAME: ${{ secrets.IMAGE_NAME }}
         run: |
           set -e
+          # If IMAGE_NAME not provided via secrets, fall back to GHCR using repo path
+          if [ -z "${IMAGE_NAME}" ]; then
+            IMAGE_NAME="ghcr.io/${GITHUB_REPOSITORY}"
+            echo "IMAGE_NAME not provided in secrets, falling back to ${IMAGE_NAME}"
+          fi
           # image tagged by sha and latest
           SHA_TAG=${GITHUB_SHA::8}
           IMAGE=${IMAGE_NAME}:${SHA_TAG}
+          echo "Building image: $IMAGE"
           docker build --pull -t $IMAGE .
           docker tag $IMAGE ${IMAGE_NAME}:latest
           docker push $IMAGE
