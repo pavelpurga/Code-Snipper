@@ -91,8 +91,7 @@ jobs:
           CONTAINER_NAME: ${{ secrets.CONTAINER_NAME || 'code-snipper' }}
         run: |
           set -e
-          echo "Deploying $IMAGE to ${DEPLOY_HOST}..."
-          ssh -o StrictHostKeyChecking=no -p $DEPLOY_SSH_PORT $DEPLOY_USER@$DEPLOY_HOST "bash -s" << 'EOF'
+          echo "Deploying $IMAGE to ${DEPLOY_HOST}..., йцук          ssh -o StrictHostKeyChecking=no -p $DEPLOY_SSH_PORT $DEPLOY_USER@$DEPLOY_HOST "bash -s" << 'EOF'
             set -e
             # create secure .env with secrets
             umask 077
