@@ -1,0 +1,69 @@
+name: Publish Node.js package
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org/'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: |
+          if npm set-script --silent | grep -q "test" ; then
+            npm test
+          else
+            echo "No test script defined, skipping tests"
+          fi
+
+      - name: Build (if defined)
+        run: |
+          if npm run --silent | grep -q "build" ; then
+            npm run build
+          else
+            echo "No build script defined, skipping build"
+          fi
+
+      - id: check_private
+        name: Check package.json private
+        run: |
+          echo "is_private=$(node -p "Boolean(require('./package.json').private)")" >> $GITHUB_OUTPUT
+
+      - name: Prepare npm auth
+        if: steps.check_private.outputs.is_private != 'true'
+        run: |
+          if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
+            echo "NPM_TOKEN secret is not set. Skipping publish." && exit 1
+          fi
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+
+      - name: Publish package to npm
+        if: steps.check_private.outputs.is_private != 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          # use public access for scoped public packages; change if needed
+          npm publish --access public
+
+      - name: Cleanup .npmrc
+        if: steps.check_private.outputs.is_private != 'true'
+        run: rm -f ~/.npmrc
+
