@@ -39,7 +39,9 @@
     "deleted": "Сниппет удалён",
     "added_favorite": "Сниппет добавлен в избранное",
     "removed_favorite": "Сниппет удалён из избранного",
-    "error": "Что-то пошло не так"
+    "error": "Что-то пошло не так",
+    "added_favorite_title": "Добавлено в избранное: {{title}}",
+    "removed_favorite_title": "Убрано из избранного: {{title}}"
   },
   "confirmations": {
     "delete_snippet_title": "Удалить сниппет?",

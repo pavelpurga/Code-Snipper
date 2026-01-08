@@ -7,6 +7,12 @@
   "snippets": {
     "page_title": "Snippets",
     "filter_hint": "this might help...",
+    "default_title": "Snippet",
+    "favorites": {
+      "added": "Added to favorites: {{title}}",
+      "removed": "Removed from favorites: {{title}}",
+      "error": "Failed to update favorites"
+    },
     "create_modal": {
       "title": "Create snippet",
       "subtitle": "Fill the fields to create a snippet",
@@ -72,6 +78,12 @@
   "favorites_page": {
     "title": "Favorite snippets",
     "empty": "No favorites yet"
+  },
+  "toasts": {
+    "copied": "Code copied",
+    "error": "Something went wrong",
+    "deleted": "Deleted",
+    "success": "Success"
   },
   "social_page": {
     "title": "Community",

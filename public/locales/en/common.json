@@ -39,7 +39,9 @@
     "deleted": "Snippet deleted",
     "added_favorite": "Snippet added to favorites",
     "removed_favorite": "Snippet removed from favorites",
-    "error": "Something went wrong"
+    "error": "Something went wrong",
+    "added_favorite_title": "Added to favorites: {{title}}",
+    "removed_favorite_title": "Removed from favorites: {{title}}"
   },
   "confirmations": {
     "delete_snippet_title": "Delete snippet?",

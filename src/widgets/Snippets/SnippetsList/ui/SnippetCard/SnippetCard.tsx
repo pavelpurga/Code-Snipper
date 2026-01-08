@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '@/shared/config/supabase/api/supabaseClient'
 import { useGetFavoriteIdsQuery, useToggleFavoriteMutation } from '@/features/snippets/api/favoritesApi.ts'
 import { useToast } from '@/shared/ui/Toast/ToastProvider.tsx'
+import { useTranslation } from 'react-i18next'
 import { useGetUserByIdQuery } from '@/features/users/api/usersApi'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useGetProfileIdQuery } from '@/features/users/api/usersApi'
@@ -24,6 +25,7 @@ export const SnippetCard = ({ snippet, onSelect, onCopy, onDelete }: SnippetCard
     const [mutateToggle] = useToggleFavoriteMutation()
     const [optimisticFav, setOptimisticFav] = useState<boolean | null>(null)
     const { show } = useToast()
+    const { i18n } = useTranslation('common')
     const navigate = useNavigate()
     const location = useLocation()
 
@@ -66,6 +68,9 @@ export const SnippetCard = ({ snippet, onSelect, onCopy, onDelete }: SnippetCard
         (onFavoritesPage || serverFav)
     )
 
+    // Переводы для тостов формируем напрямую через i18n.t с именованным ns и defaultValue.
+    // Это гарантирует, что если namespace ещё не загружен, будет использован fallback-строка.
+
     const toggleFavClick = (e: React.MouseEvent) => {
         e.stopPropagation()
         const next = !(optimisticFav !== null ? optimisticFav : serverFav)
@@ -75,15 +80,32 @@ export const SnippetCard = ({ snippet, onSelect, onCopy, onDelete }: SnippetCard
             .then(() => {
                 setOptimisticFav(null)
                 if (next) {
-                    show(`Добавлено в избранное: ${snippet.title || 'Сниппет'}`, { variant: 'success', duration: 1500 })
+                    const title = snippet.title ?? (i18n.language?.startsWith('ru') ? 'Сниппет' : 'Snippet')
+                    const fallbackAdded = i18n.language?.startsWith('ru') ? `Добавлено в избранное: ${title}` : `Added to favorites: ${title}`
+                    // сначала попробуем namespaced common key с defaultValue
+                    const added = i18n.t('toasts.added_favorite_title', {
+                        ns: 'common',
+                        title,
+                        defaultValue: i18n.t('snippets.favorites.added', { ns: 'translation', title, defaultValue: fallbackAdded }),
+                    })
+                    show(added, { variant: 'success', duration: 1500 })
                 } else {
-                    show(`Убрано из избранного: ${snippet.title || 'Сниппет'}`, { variant: 'info', duration: 1500 })
+                    const title = snippet.title ?? (i18n.language?.startsWith('ru') ? 'Сниппет' : 'Snippet')
+                    const fallbackRemoved = i18n.language?.startsWith('ru') ? `Убрано из избранного: ${title}` : `Removed from favorites: ${title}`
+                    const removed = i18n.t('toasts.removed_favorite_title', {
+                        ns: 'common',
+                        title,
+                        defaultValue: i18n.t('snippets.favorites.removed', { ns: 'translation', title, defaultValue: fallbackRemoved }),
+                    })
+                    show(removed, { variant: 'info', duration: 1500 })
                 }
             })
             .catch(() => {
                 // ошибка: отменяем оптимистичное значение
                 setOptimisticFav(null)
-                show('Не удалось изменить избранное', { variant: 'error' })
+                const fallbackErr = i18n.language?.startsWith('ru') ? 'Не удалось изменить избранное' : 'Failed to update favorites'
+                const errMsg = i18n.t('toasts.error', { ns: 'common', defaultValue: i18n.t('snippets.favorites.error', { ns: 'translation', defaultValue: fallbackErr }) })
+                show(errMsg, { variant: 'error' })
             })
     }
 

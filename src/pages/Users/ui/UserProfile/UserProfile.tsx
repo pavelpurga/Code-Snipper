@@ -38,7 +38,7 @@ export default function UserProfile(): React.ReactElement {
     const onCopy = async (code: string) => {
         try {
             await navigator.clipboard.writeText(code)
-            show('Код скопирован', { variant: 'info' })
+            show(t('toasts.copied'), { variant: 'info' })
         } catch {
             // ignore
         }
