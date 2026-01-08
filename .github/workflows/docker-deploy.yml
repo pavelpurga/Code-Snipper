@@ -1,3 +1,4 @@
+# yaml
 name: Build, Publish Docker image and Deploy
 
 on:
@@ -36,26 +37,18 @@ jobs:
         env:
           IMAGE_NAME: ${{ secrets.IMAGE_NAME }}
         run: |
-          set -e
-          # If IMAGE_NAME not provided via secrets, fall back to GHCR using repo path
+          set -euo pipefail
           if [ -z "${IMAGE_NAME}" ]; then
             IMAGE_NAME="ghcr.io/${GITHUB_REPOSITORY}"
-            echo "IMAGE_NAME not provided in secrets, falling back to ${IMAGE_NAME}"
           fi
-
-          # Normalize IMAGE_NAME to lowercase (GHCR requires lowercase repo names)
           IMAGE_NAME="$(echo "${IMAGE_NAME}" | tr '[:upper:]' '[:lower:]')"
-          echo "Normalized IMAGE_NAME=${IMAGE_NAME}"
-
-          # image tagged by sha and latest
           SHA_TAG=${GITHUB_SHA::8}
           IMAGE=${IMAGE_NAME}:${SHA_TAG}
-          echo "Building image: $IMAGE"
-          docker build --pull -t $IMAGE .
-          docker tag $IMAGE ${IMAGE_NAME}:latest
-          docker push $IMAGE
-          docker push ${IMAGE_NAME}:latest
-          echo "image=$IMAGE" >> $GITHUB_OUTPUT
+          docker build --pull -t "$IMAGE" .
+          docker tag "$IMAGE" "${IMAGE_NAME}:latest"
+          docker push "$IMAGE"
+          docker push "${IMAGE_NAME}:latest"
+          echo "image=$IMAGE" >> "$GITHUB_OUTPUT"
 
   deploy:
     needs: build-and-push
@@ -65,10 +58,9 @@ jobs:
         id: check-deploy-key
         run: |
           if [ -z "${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}" ]; then
-            echo "No SSH deploy key found in secrets, skipping deploy steps."
-            echo "deploy=false" >> $GITHUB_OUTPUT
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
           else
-            echo "deploy=true" >> $GITHUB_OUTPUT
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Install ssh client
@@ -90,25 +82,27 @@ jobs:
           DEPLOY_SSH_PORT: ${{ secrets.DEPLOY_SSH_PORT || '22' }}
           CONTAINER_NAME: ${{ secrets.CONTAINER_NAME || 'code-snipper' }}
         run: |
-          set -e
+          set -euo pipefail
           echo "Preparing deploy.env on runner (will be copied to remote)..."
-          # create deploy.env file with secrets on runner
-          printf 'VITE_SUPABASE_URL=%s\nVITE_SUPABASE_ANON_KEY=%s\nVITE_CURRENCYLAYER_API_KEY=%s\n' "${{ secrets.VITE_SUPABASE_URL }}" "${{ secrets.VITE_SUPABASE_ANON_KEY }}" "${{ secrets.VITE_CURRENCYLAYER_API_KEY }}" > deploy.env
 
-          # ensure ssh is available and scp will work (ssh-agent step already added)
+          # Create deploy.env on runner from secrets (do not print values)
+          printf '%s\n' "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}" \
+                         "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}" \
+                         "VITE_CURRENCYLAYER_API_KEY=${{ secrets.VITE_CURRENCYLAYER_API_KEY }}" > deploy.env
+          chmod 600 deploy.env
+
           echo "Copying deploy.env to remote host..."
-          scp -P ${DEPLOY_SSH_PORT} deploy.env ${DEPLOY_USER}@${DEPLOY_HOST}:/home/${DEPLOY_USER}/.env
+          # disable strict host checking to avoid interactive prompt in fresh runners
+          scp -o StrictHostKeyChecking=no -P "${DEPLOY_SSH_PORT}" deploy.env "${DEPLOY_USER}@${DEPLOY_HOST}:/home/${DEPLOY_USER}/.env"
 
-          echo "Deploying $IMAGE to ${DEPLOY_HOST}..."
-          ssh -p ${DEPLOY_SSH_PORT} ${DEPLOY_USER}@${DEPLOY_HOST} "docker pull ${IMAGE} && docker stop ${CONTAINER_NAME} || true && docker rm ${CONTAINER_NAME} || true && docker run -d --name ${CONTAINER_NAME} --env-file /home/${DEPLOY_USER}/.env -p 80:80 --restart unless-stopped ${IMAGE}"
+          echo "Verifying remote .env existence..."
+          ssh -o StrictHostKeyChecking=no -p "${DEPLOY_SSH_PORT}" "${DEPLOY_USER}@${DEPLOY_HOST}" "test -f /home/${DEPLOY_USER}/.env && echo ok || (echo 'deploy env missing' && exit 2)"
 
-          # cleanup local sensitive file
+          echo "Deploying ${IMAGE} to ${DEPLOY_HOST}..."
+          ssh -o StrictHostKeyChecking=no -p "${DEPLOY_SSH_PORT}" "${DEPLOY_USER}@${DEPLOY_HOST}" \
+            "docker pull ${IMAGE} \
+             && docker stop ${CONTAINER_NAME} || true \
+             && docker rm ${CONTAINER_NAME} || true \
+             && docker run -d --name ${CONTAINER_NAME} --env-file /home/${DEPLOY_USER}/.env -p 80:80 --restart unless-stopped ${IMAGE}"
+
           rm -f deploy.env
-
-  # Optional: cleanup old images on GHCR - commented out example
-  # cleanup:
-  #   runs-on: ubuntu-latest
-  #   needs: build-and-push
-  #   steps:
-  #     - name: Cleanup placeholder
-  #       run: echo 'Implement image cleanup if needed'
