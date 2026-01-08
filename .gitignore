@@ -18,7 +18,6 @@ dist-ssr
 !.env.example
 .env.local
 deploy.env
-public/runtime-config.js
 
 # Editor directories and files
 .vscode/*

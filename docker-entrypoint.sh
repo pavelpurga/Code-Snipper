@@ -2,36 +2,57 @@
 set -eu
 
 OUT=/usr/share/nginx/html/runtime-config.js
-# Шаблон ожидаем в этом пути внутри nginx-публичной папки после сборки
-TEMPLATE1=/usr/share/nginx/html/runtime-config.js.template
-# Запасной вариант — шаблон в рабочей директории контейнера (например при локальном запуске)
-TEMPLATE2=./runtime-config.js.template
+TEMPLATE=/usr/share/nginx/html/runtime-config.js.template
 
-# Подготовим переменные (разрешаем пустые значения)
 : "${VITE_SUPABASE_URL:=}"
 : "${VITE_SUPABASE_ANON_KEY:=}"
 : "${VITE_CURRENCYLAYER_API_KEY:=}"
-export VITE_SUPABASE_URL VITE_SUPABASE_ANON_KEY VITE_CURRENCYLAYER_API_KEY
+: "${ALLOW_EMPTY_RUNTIME:=0}"
+export VITE_SUPABASE_URL VITE_SUPABASE_ANON_KEY VITE_CURRENCYLAYER_API_KEY ALLOW_EMPTY_RUNTIME
 
-render_template() {
-  TEMPLATE_PATH="$1"
-  if [ -f "$TEMPLATE_PATH" ]; then
-    echo "Rendering runtime configuration from template $TEMPLATE_PATH..."
-    # Подставляем только ожидаемые переменные, чтобы не инжектить лишнее
-    envsubst '${VITE_SUPABASE_URL} ${VITE_SUPABASE_ANON_KEY} ${VITE_CURRENCYLAYER_API_KEY}' < "$TEMPLATE_PATH" > "$OUT"
-    echo "Wrote $OUT"
-    return 0
+# Helper to check if runtime-config.js exists and contains non-empty values
+runtime_valid() {
+  if [ -f "$OUT" ]; then
+    # check for non-empty values (simple heuristic: not all empty strings or placeholders)
+    if grep -q 'VITE_SUPABASE_URL' "$OUT" && ! grep -q '\${' "$OUT"; then
+      # check that value isn't empty
+      val=$(sed -n "s/.*VITE_SUPABASE_URL:\s*\"\(.*\)\".*/\1/p" "$OUT" | tr -d '\r')
+      if [ -n "$val" ]; then
+        return 0
+      fi
+    fi
   fi
   return 1
 }
 
-if render_template "$TEMPLATE1"; then
-  :
-elif render_template "$TEMPLATE2"; then
-  :
+# If runtime-config.js already present and valid, skip generation
+if runtime_valid; then
+  echo "runtime-config.js already present and valid, skipping generation"
 else
-  echo "Template runtime-config.js.template not found in $TEMPLATE1 or $TEMPLATE2, skipping runtime config rendering"
+  # If template exists, prefer rendering from it (envsubst will replace with env or empty)
+  if [ -f "$TEMPLATE" ]; then
+    echo "Rendering runtime configuration from template $TEMPLATE..."
+    envsubst '${VITE_SUPABASE_URL} ${VITE_SUPABASE_ANON_KEY} ${VITE_CURRENCYLAYER_API_KEY}' < "$TEMPLATE" > "$OUT"
+    echo "Wrote $OUT from template"
+  else
+    # If build-time variables provided (embedded in image) or runtime env provided, generate
+    if [ -n "$VITE_SUPABASE_URL" ] || [ -n "$VITE_SUPABASE_ANON_KEY" ]; then
+      echo "Generating runtime-config.js from environment variables..."
+      printf 'window.__RUNTIME__ = {\n  VITE_SUPABASE_URL: "%s",\n  VITE_SUPABASE_ANON_KEY: "%s",\n  VITE_CURRENCYLAYER_API_KEY: "%s"\n}\n' "$VITE_SUPABASE_URL" "$VITE_SUPABASE_ANON_KEY" "$VITE_CURRENCYLAYER_API_KEY" > "$OUT"
+      echo "Wrote $OUT from environment"
+    else
+      echo "No template and no VITE_* env vars, leaving runtime-config.js as-is (if present) or empty"
+    fi
+  fi
 fi
 
-# Exec the main command (nginx)
+# If runtime is required, validate (unless ALLOW_EMPTY_RUNTIME=1)
+if [ "${ALLOW_EMPTY_RUNTIME}" != "1" ]; then
+  if ! runtime_valid; then
+    echo "ERROR: runtime-config.js is missing or invalid. Provide VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY either as build-args (recommended for image) or as runtime envs (via --env-file)" >&2
+    [ -f "$OUT" ] && echo "---- current runtime-config.js ----" >&2 && cat "$OUT" >&2
+    exit 1
+  fi
+fi
+
 exec "$@"
