@@ -11,7 +11,6 @@ export type CurrencyLayerTimeframeResp = {
   error?: { code?: number; info?: string }
 }
 
-// Тип ошибки для RTK Query (HTTP статус + текст/сообщение)
 export type QueryError = { status: number; data: string }
 
 const LS_KEY_PREFIX = 'currencylayer_timeframe_cache_v1'
@@ -30,7 +29,6 @@ export const currencyApi = createApi({
             async queryFn({ startDate, endDate }) {
                 try {
                     const LS_KEY = makeCacheKey(startDate, endDate)
-                    // 1) Читаем персистентный кэш
                     const raw = localStorage.getItem(LS_KEY)
                     if (raw) {
                         try {
@@ -41,13 +39,9 @@ export const currencyApi = createApi({
                         } catch { /* ignore broken cache */ }
                     }
 
-                    // 2) Запрос к API
-                    // Prefer compile-time env (import.meta.env) but fall back to runtime injected window.__RUNTIME__
                     let buildKey = (import.meta as { env: { VITE_CURRENCYLAYER_API_KEY?: string } }).env?.VITE_CURRENCYLAYER_API_KEY
-                    // If buildKey is a placeholder like '${VITE_CURRENCYLAYER_API_KEY}', treat it as absent
                     if (typeof buildKey === 'string' && buildKey.includes('${')) buildKey = undefined
                     const runtimeKey = (typeof window !== 'undefined' ? (window as unknown as { __RUNTIME__?: { VITE_CURRENCYLAYER_API_KEY?: string } }).__RUNTIME__?.VITE_CURRENCYLAYER_API_KEY : undefined)
-                    // Debug: log presence of keys (do NOT log actual values)
                     try { console.debug('currencyApi: buildKeyPresent=', !!buildKey, 'runtimeKeyPresent=', !!runtimeKey) } catch { /* ignore */ }
                     const accessKey = buildKey || runtimeKey
                     if (!accessKey) {
