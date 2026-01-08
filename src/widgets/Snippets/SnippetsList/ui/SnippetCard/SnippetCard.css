@@ -3,12 +3,13 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 12px;
+  padding: 12px 12px;
   border: 1px solid var(--modal-border, rgba(0,0,0,0.2)); /* усилил контраст */
   border-radius: 12px;
   background: var(--modal-bg, rgba(0,0,0,0.03)); /* чуть темнее в светлой теме */
-  height: 340px; /* больше места под код */
-  overflow: hidden; /* прячем выходящее содержимое */
+  height: 340px;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 /* Header layout: tags wrap and language badge pinned to the right */
@@ -83,27 +84,130 @@
   padding-left: 12px;
 }
 
-.snippet-card__footer { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; }
-.snippet-card__date { font-size: 0.75rem; color: var(--muted-foreground); }
-.snippet-card__actions { display: flex; gap: 8px; }
-.snippet-card__action { display: inline-flex; align-items: center; justify-content: center; }
+/* Footer: ensure proper layout and prevent overlapping */
+.snippet-card__footer {
+  position: relative;
+  flex-shrink: 0;
+  display: grid;
+  /* колонки: date(min-content) | stretch | author (max-content) | actions (fixed 96px) */
+  grid-template-columns: min-content minmax(0, 1fr) max-content 96px;
+  align-items: center;
+  padding: 8px 12px;
+  gap: 16px; /* чуть больше пространства */
+  overflow: visible;
+}
 
-/* Бейдж автора для чужих избранных сниппетов */
-.snippet-card__meta { display: inline-flex; align-items: center; gap: 8px; }
+/* Meta (date) stays in column 1 */
+.snippet-card__meta { grid-column: 1 / 2; }
+
+/* NEW: controls wrapper occupying columns 3..5 (author + actions) */
+.snippet-card__controls {
+  /* span the middle and right columns so author badge can move left closer to content */
+  grid-column: 2 / 5;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  min-width: 0;
+  position: relative; /* новый контекст для absolute бейджа */
+}
+
+/* Author badge: column 3 (left of actions), compact */
 .snippet-card__author-badge {
+    /* компактный круглый бейдж размером с иконку */
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 0;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    z-index: 200;
+    background: var(--card, var(--modal-bg));
+    border: 1px solid var(--modal-border, rgba(15,23,42,0.06));
+    color: inherit;
+    border-radius: 50%;
+    box-shadow: none;
+    /* по-прежнему по центру по вертикали в футере */
+    top: 50%;
+    transform: translateY(-50%);
+    /* позиционирование по горизонтали оставляем близким к правой стороне действий */
+    right: 120px;
+}
+
+/* внутренний аватар/инициалы подстраиваем под новый размер */
+.snippet-card__author-avatar {
+    width: 100%; /* Занимает всю ширину бейджа */
+    height: 100%; /* Занимает всю высоту бейджа */
+    font-size: 10px;
+    line-height: 14px;
+    display: flex; /* Вместо inline-flex для лучшего заполнения */
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: transparent; /* фон бейджа уже задан */
+    color: var(--foreground);
+    padding: 0;
+    margin: 0; /* Убираем возможные отступы */
+    border: none; /* Убираем возможные границы */
+}
+
+/* Actions: now static inside controls (no absolute) */
+.snippet-card__actions {
+  position: relative; /* so z-index applies */
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex: 0 0 auto;
+  min-width: 0;
+  width: auto;
+  justify-content: flex-end;
+  z-index: 80; /* выше чем у бейджа */
+  order: 1; /* place actions after author badge */
+}
+
+/* Ensure date stays on top to avoid accidental overlap */
+.snippet-card__date { z-index: 500; position: relative; }
+
+/* If author badge exists immediately before actions, push actions a bit to the right */
+.snippet-card__author-badge + .snippet-card__actions,
+.snippet-card__author-badge ~ .snippet-card__actions {
+  margin-left: 12px; /* отодвигаем иконки вправо при наличии автора */
+}
+
+/* If no author badge, ensure actions have a minimum left gap from middle column */
+.snippet-card__actions { padding-left: 8px; }
+
+/* Make favorite button visually obvious (circle bg + border + shadow) */
+.snippet-card__action--fav {
+  background: var(--primary-button-bg, #646cff);
+  color: var(--primary-button-color, #fff);
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 2px 8px;
-  border-radius: 999px;
-  border: 1px solid var(--modal-border, rgba(0,0,0,0.15));
-  background: var(--modal-bg, rgba(0,0,0,0.03));
-  color: var(--foreground);
+  justify-content: center;
+  box-shadow: 0 6px 14px rgba(100,108,255,0.28);
+  border: 1px solid rgba(255,255,255,0.16);
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  margin-left: 6px; /* give a bit of space from author badge */
 }
-.snippet-card__author-text { font-size: 0.78rem; max-width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* Скелетон и границы */
-.snippet-card__gradient-border { position: absolute; inset: 0; border-radius: 12px; pointer-events: none; }
+/* Ensure other actions are visible */
+.snippet-card__action { width: 28px; height: 28px; min-width: 28px; min-height: 28px; }
+.snippet-card__action svg { width: 14px !important; height: 14px !important; }
+
+@media (max-width: 520px) {
+  .snippet-card__footer { grid-template-columns: min-content minmax(0, 1fr) min-content min-content; }
+  .snippet-card__author-text { display: none; }
+  .snippet-card__author-badge { position: static !important; width: auto; height: auto; border-radius: 999px; padding: 4px; max-width: 90px; margin-left: 8px !important; transform: none !important; top: auto; right: auto; }
+  .snippet-card__actions { min-width: 60px; gap: 6px; max-width: 90px; }
+}
 
 /* Доп. улучшения читаемости кода */
 .snippet-card__preview pre,
@@ -118,16 +222,3 @@
 .snippet-card__preview::-webkit-scrollbar-track { background: rgba(255,255,255,0.06); border-radius: 8px; }
 .snippet-card__preview::-webkit-scrollbar-thumb { background: rgba(100,108,255,0.4); border-radius: 8px; }
 .snippet-card__preview::-webkit-scrollbar-thumb:hover { background: rgba(100,108,255,0.6); }
-
-.snippet-card__action--fav {
-  background: rgba(250, 204, 21, 0.15);
-  color: #facc15;
-}
-.snippet-card__action--fav:hover {
-  background: rgba(250, 204, 21, 0.25);
-  box-shadow: 0 4px 12px rgba(250, 204, 21, 0.25);
-}
-.snippet-card__action--fav-off:hover {
-  background: rgba(250, 204, 21, 0.15);
-  color: #facc15;
-}

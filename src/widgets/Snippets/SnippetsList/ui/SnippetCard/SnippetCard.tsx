@@ -5,10 +5,12 @@ import SyntaxHighlighter from 'react-syntax-highlighter'
 import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 import './SnippetCard.css'
 import { useEffect, useState } from 'react'
+import { supabase } from '@/shared/config/supabase/api/supabaseClient'
 import { useGetFavoriteIdsQuery, useToggleFavoriteMutation } from '@/features/snippets/api/favoritesApi.ts'
 import { useToast } from '@/shared/ui/Toast/ToastProvider.tsx'
-import { useGetProfileIdQuery, useGetUserByIdQuery } from '@/features/users/api/usersApi'
-import { useNavigate } from 'react-router-dom'
+import { useGetUserByIdQuery } from '@/features/users/api/usersApi'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { useGetProfileIdQuery } from '@/features/users/api/usersApi'
 
 interface SnippetCardProps {
   snippet: Tables<'snippets'>
@@ -20,34 +22,58 @@ interface SnippetCardProps {
 export const SnippetCard = ({ snippet, onSelect, onCopy, onDelete }: SnippetCardProps) => {
     const { data: favIds = [] } = useGetFavoriteIdsQuery()
     const [mutateToggle] = useToggleFavoriteMutation()
-    const [isFav, setIsFav] = useState<boolean>(() => favIds.includes(snippet.id))
+    const [optimisticFav, setOptimisticFav] = useState<boolean | null>(null)
     const { show } = useToast()
     const navigate = useNavigate()
+    const location = useLocation()
 
-    // Текущий пользователь
     const { data: me } = useGetProfileIdQuery()
     const myId = me?.id
 
-    // Профиль автора сниппета (только если нужно)
-    const isForeign = !!snippet.user_id && myId && snippet.user_id !== myId
-    const { data: author } = useGetUserByIdQuery(snippet.user_id as string, { skip: !isForeign })
+    const { data: author } = useGetUserByIdQuery(snippet.user_id as string, { skip: !snippet.user_id })
     const authorName = author?.user_name ?? author?.email ?? 'User'
+    const getInitials = (name?: string | null): string | null => {
+        if (!name) return null
+        const parts = name.trim().split(/\s+/)
+        if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
+        return (parts[0][0] + parts[1][0]).toUpperCase()
+    }
+    const authorInitials = getInitials(author?.user_name ?? author?.email ?? null)
+    console.debug('SnippetCard debug:', { id: snippet.id, user_id: snippet.user_id, author })
+    const onFavoritesPage = location.pathname.startsWith('/favorites')
 
-    // Если ids обновились из запроса (например, после инвалидации), мягко синхронизируем локальный стейт
+    const serverFav = Array.isArray(favIds) ? favIds.includes(snippet.id) : false
+    const displayedIsFav = optimisticFav !== null ? optimisticFav : serverFav
+
+    const [authUid, setAuthUid] = useState<string | null>(null)
     useEffect(() => {
-    // только если серверное значение отличается от локального и локально сейчас нет перехода
-        const serverFav = favIds.includes(snippet.id)
-        if (serverFav !== isFav) setIsFav(serverFav)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [favIds.join('|'), snippet.id])
+        let mounted = true
+        supabase.auth.getUser().then(({ data: { user } }) => {
+            if (!mounted) return
+            setAuthUid(user?.id ?? null)
+        }).catch(() => {})
+        return () => { mounted = false }
+    }, [])
+
+    const ownerNorm = snippet.user_id ? String(snippet.user_id).toLowerCase().trim() : ''
+    const currentNorm = (myId ?? authUid) ? String(myId ?? authUid).toLowerCase().trim() : ''
+    const isOwn = Boolean(ownerNorm && currentNorm && ownerNorm === currentNorm)
+
+    const showAuthorBadge = Boolean(
+        ownerNorm &&
+        currentNorm &&
+        !isOwn &&
+        (onFavoritesPage || serverFav)
+    )
 
     const toggleFavClick = (e: React.MouseEvent) => {
         e.stopPropagation()
-        const next = !isFav
-        setIsFav(next)
+        const next = !(optimisticFav !== null ? optimisticFav : serverFav)
+        setOptimisticFav(next)
         mutateToggle({ id: snippet.id, next })
             .unwrap()
             .then(() => {
+                setOptimisticFav(null)
                 if (next) {
                     show(`Добавлено в избранное: ${snippet.title || 'Сниппет'}`, { variant: 'success', duration: 1500 })
                 } else {
@@ -55,7 +81,8 @@ export const SnippetCard = ({ snippet, onSelect, onCopy, onDelete }: SnippetCard
                 }
             })
             .catch(() => {
-                setIsFav(!next)
+                // ошибка: отменяем оптимистичное значение
+                setOptimisticFav(null)
                 show('Не удалось изменить избранное', { variant: 'error' })
             })
     }
@@ -117,35 +144,44 @@ export const SnippetCard = ({ snippet, onSelect, onCopy, onDelete }: SnippetCard
                             ? new Date(snippet.created_at).toLocaleDateString('ru-RU')
                             : 'Дата неизвестна' }
                     </span>
-                    { isFav && isForeign && (
-                        <span className='snippet-card__author-badge' title={ `Автор: ${authorName}` } onClick={ onAuthorClick }>
-                            <UserIcon size={ 14 } />
-                            <span className='snippet-card__author-text'>{ authorName }</span>
+                </div>
+
+                <div className={ `snippet-card__controls ${showAuthorBadge ? 'has-author' : ''}` }>
+                    { showAuthorBadge && (
+                        <span className='snippet-card__author-badge' title={ `Автор: ${authorName}` } onClick={ onAuthorClick } aria-label={ `Автор: ${authorName}` }>
+                            <span className='snippet-card__author-icon-wrapper' aria-hidden>
+                                { authorInitials ? (
+                                    <span className='snippet-card__author-avatar'>{ authorInitials }</span>
+                                ) : (
+                                    <UserIcon size={ 10 } />
+                                ) }
+                            </span>
                         </span>
                     ) }
-                </div>
-                <div className='snippet-card__actions'>
-                    <Button
-                        className={ `snippet-card__action ${isFav ? 'snippet-card__action--fav' : 'snippet-card__action--fav-off'}` }
-                        onClick={ toggleFavClick }
-                        title={ isFav ? 'Убрать из избранного' : 'В избранное' }
-                    >
-                        <Star size={ 16 } fill={ isFav ? '#facc15' : 'none' } color={ isFav ? '#facc15' : 'currentColor' } />
-                    </Button>
-                    <Button
-                        className='snippet-card__action snippet-card__action--copy'
-                        onClick={ (e) => onCopy(snippet.code || '', e) }
-                        title='Копировать код'
-                    >
-                        <Copy size={ 16 } />
-                    </Button>
-                    <Button
-                        className='snippet-card__action snippet-card__action--delete'
-                        onClick={ (e) => onDelete(snippet.id, e) }
-                        title='Удалить'
-                    >
-                        <Trash2 size={ 16 } />
-                    </Button>
+
+                    <div className='snippet-card__actions'>
+                        <Button
+                            className={ `snippet-card__action ${displayedIsFav ? 'snippet-card__action--fav' : 'snippet-card__action--fav-off'}` }
+                            onClick={ (e) => { e.stopPropagation(); toggleFavClick(e) } }
+                            title={ displayedIsFav ? 'Убрать из избранного' : 'В избранное' }
+                        >
+                            <Star size={ 16 } fill={ displayedIsFav ? '#facc15' : 'none' } color={ displayedIsFav ? '#facc15' : 'currentColor' } />
+                        </Button>
+                        <Button
+                            className='snippet-card__action snippet-card__action--copy'
+                            onClick={ (e) => { e.stopPropagation(); onCopy(snippet.code || '', e) } }
+                            title='Копировать код'
+                        >
+                            <Copy size={ 16 } />
+                        </Button>
+                        <Button
+                            className='snippet-card__action snippet-card__action--delete'
+                            onClick={ (e) => { e.stopPropagation(); onDelete(snippet.id, e) } }
+                            title='Удалить'
+                        >
+                            <Trash2 size={ 16 } />
+                        </Button>
+                    </div>
                 </div>
             </div>
 

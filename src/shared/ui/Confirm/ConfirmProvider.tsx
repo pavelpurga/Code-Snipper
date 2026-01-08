@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import './Confirm.css'
+import { useTranslation } from 'react-i18next'
 
 export type ConfirmOptions = {
   title?: string
@@ -25,6 +26,7 @@ export const useConfirm = (): ConfirmContextValue => {
 }
 
 export const ConfirmProvider: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
+    const { t } = useTranslation('common')
     const [pending, setPending] = useState<Pending>(null)
     const [open, setOpen] = useState(false)
     const cancelRef = useRef<HTMLButtonElement | null>(null)
@@ -48,16 +50,16 @@ export const ConfirmProvider: React.FC<{ children?: React.ReactNode }> = ({ chil
 
     const confirm = useCallback((opts?: ConfirmOptions) => new Promise<boolean>((resolve) => {
         setPending({
-            title: opts?.title ?? 'Подтверждение',
-            description: opts?.description ?? 'Вы уверены, что хотите продолжить?',
-            confirmText: opts?.confirmText ?? 'ОК',
-            cancelText: opts?.cancelText ?? 'Отмена',
+            title: opts?.title ?? t('confirmations.delete_snippet_title', { defaultValue: 'Confirmation' }),
+            description: opts?.description ?? t('confirmations.delete_snippet_text', { defaultValue: 'Are you sure?' }),
+            confirmText: opts?.confirmText ?? t('yes', { defaultValue: 'OK' }),
+            cancelText: opts?.cancelText ?? t('no', { defaultValue: 'Cancel' }),
             variant: opts?.variant ?? 'default',
             resolve,
         })
         // следующий тик — открыть, чтобы сработала анимация
         requestAnimationFrame(() => setOpen(true))
-    }), [])
+    }), [t])
 
     useEffect(() => {
         if (!open) return
@@ -105,4 +107,3 @@ export const ConfirmProvider: React.FC<{ children?: React.ReactNode }> = ({ chil
         </ConfirmContext.Provider>
     )
 }
-

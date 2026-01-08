@@ -35,4 +35,12 @@ export default defineConfig([
             'react/jsx-indent-props': ['error', 4],
         },
     },
+    // Allow Node globals inside scripts (build/runtime helper scripts)
+    {
+        files: ['scripts/**', 'scripts/**.*'],
+        languageOptions: {
+            ecmaVersion: 2020,
+            globals: globals.node,
+        },
+    },
 ])

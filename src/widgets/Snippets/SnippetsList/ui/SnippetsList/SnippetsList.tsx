@@ -57,8 +57,8 @@ export const SnippetsList = memo(({ onSelect, emptyMessage, query = '', language
         const ok = await confirm({
             title: t('confirmations.delete_snippet_title'),
             description: t('confirmations.delete_snippet_text'),
-            confirmText: t('common.yes'),
-            cancelText: t('common.no'),
+            confirmText: t('yes'),
+            cancelText: t('no'),
             variant: 'danger',
         })
         if (!ok) return;

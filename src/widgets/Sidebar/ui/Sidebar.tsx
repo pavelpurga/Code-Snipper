@@ -97,10 +97,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ className, isCollapsed, onTogg
 
     const handleLogout = async () => {
         const ok = await confirm({
-            title: t('confirmations.logout_title'),
-            description: t('confirmations.logout_text'),
-            confirmText: t('common.yes'),
-            cancelText: t('common.no'),
+            title: t('common:confirmations.logout_title'),
+            description: t('common:confirmations.logout_text'),
+            confirmText: t('common:yes'),
+            cancelText: t('common:no'),
             variant: 'danger',
         })
         if (!ok) return
