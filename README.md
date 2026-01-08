@@ -187,16 +187,3 @@ Runtime config generation
 - If translations show raw keys instead of text, ensure the JSON files exist and the i18n backend can fetch them; check network requests for `/locales/...`.
 
 ---
-
-## License
-
-This repository does not include a license by default. Add a `LICENSE` file if you intend to publish or share the project.
-
----
-
-If you want, I can also:
-- Add a brief CONTRIBUTING.md with commit & PR guidelines;
-- Create a minimal `.env.example` (without secrets) and a `deploy/` guide with GitHub Actions secrets required;
-- Generate a short developer quickstart section with exact commands for Windows (PowerShell) and Unix shells.
-
-Feel free to tell me which of these you'd like next and I will add it to the repo.

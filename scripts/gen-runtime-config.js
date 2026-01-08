@@ -1,5 +1,4 @@
 /* eslint-env node */
-/* global process */
 import fs from 'fs'
 import path from 'path'
 import dotenv from 'dotenv'
@@ -16,7 +15,8 @@ if (fs.existsSync(envPath)) {
 
 const out = `window.__RUNTIME__ = {
   VITE_SUPABASE_URL: "${result.VITE_SUPABASE_URL ?? ''}",
-  VITE_SUPABASE_ANON_KEY: "${result.VITE_SUPABASE_ANON_KEY ?? ''}"
+  VITE_SUPABASE_ANON_KEY: "${result.VITE_SUPABASE_ANON_KEY ?? ''}",
+  VITE_CURRENCYLAYER_API_KEY: "${result.VITE_CURRENCYLAYER_API_KEY ?? ''}",
 }
 `
 
