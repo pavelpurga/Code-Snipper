@@ -42,9 +42,16 @@ export const currencyApi = createApi({
                     }
 
                     // 2) Запрос к API
-                    const accessKey = (import.meta as { env: { VITE_CURRENCYLAYER_API_KEY?: string } }).env?.VITE_CURRENCYLAYER_API_KEY
+                    // Prefer compile-time env (import.meta.env) but fall back to runtime injected window.__RUNTIME__
+                    let buildKey = (import.meta as { env: { VITE_CURRENCYLAYER_API_KEY?: string } }).env?.VITE_CURRENCYLAYER_API_KEY
+                    // If buildKey is a placeholder like '${VITE_CURRENCYLAYER_API_KEY}', treat it as absent
+                    if (typeof buildKey === 'string' && buildKey.includes('${')) buildKey = undefined
+                    const runtimeKey = (typeof window !== 'undefined' ? (window as unknown as { __RUNTIME__?: { VITE_CURRENCYLAYER_API_KEY?: string } }).__RUNTIME__?.VITE_CURRENCYLAYER_API_KEY : undefined)
+                    // Debug: log presence of keys (do NOT log actual values)
+                    try { console.debug('currencyApi: buildKeyPresent=', !!buildKey, 'runtimeKeyPresent=', !!runtimeKey) } catch { /* ignore */ }
+                    const accessKey = buildKey || runtimeKey
                     if (!accessKey) {
-                        return { error: { status: 400, data: 'Missing VITE_CURRENCYLAYER_API_KEY' } }
+                        return { error: { status: 400, data: 'Missing VITE_CURRENCYLAYER_API_KEY (set at build-time or provide via runtime-config.js)' } }
                     }
                     const url = `https://api.currencylayer.com/timeframe?access_key=${accessKey}&start_date=${startDate}&end_date=${endDate}&currencies=RUB,EUR,BYN&source=USD`
                     const res = await fetch(url)
