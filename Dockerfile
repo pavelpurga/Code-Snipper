@@ -32,7 +32,7 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 # If build args provided, generate runtime-config.js at build time so the image is runnable
-RUN if [ -n "${VITE_SUPABASE_URL}" ] || [ -n "${VITE_SUPABASE_ANON_KEY}" ]; then \
+RUN if [ -n "${VITE_SUPABASE_URL}" ] || [ -n "${VITE_SUPABASE_ANON_KEY}" ] || [ -n "${VITE_CURRENCYLAYER_API_KEY}" ]; then \
   printf 'window.__RUNTIME__ = {\n  VITE_SUPABASE_URL: "%s",\n  VITE_SUPABASE_ANON_KEY: "%s",\n  VITE_CURRENCYLAYER_API_KEY: "%s"\n}\n' "${VITE_SUPABASE_URL}" "${VITE_SUPABASE_ANON_KEY}" "${VITE_CURRENCYLAYER_API_KEY}" > /usr/share/nginx/html/runtime-config.js; \
   echo "Created runtime-config.js at build time"; \
 fi
