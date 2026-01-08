@@ -59,7 +59,6 @@ jobs:
           docker tag "$IMAGE" "${IMAGE_NAME}:latest"
           docker push "$IMAGE"
           docker push "${IMAGE_NAME}:latest"
-
           echo "image=$IMAGE" >> "$GITHUB_OUTPUT"
 
   deploy:
@@ -93,15 +92,37 @@ jobs:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_SSH_PORT: ${{ secrets.DEPLOY_SSH_PORT }}
           CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_CURRENCYLAYER_API_KEY: ${{ secrets.VITE_CURRENCYLAYER_API_KEY }}
         run: |
           set -euo pipefail
+          # default port fallback
           DEPLOY_SSH_PORT="${DEPLOY_SSH_PORT:-22}"
+
+          echo "Preparing deploy.env on runner (will be copied to remote)..."
+
+          # Create deploy.env on runner from secrets (do not print values)
+          printf '%s\n' "VITE_SUPABASE_URL=${VITE_SUPABASE_URL}" \
+                         "VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}" \
+                         "VITE_CURRENCYLAYER_API_KEY=${VITE_CURRENCYLAYER_API_KEY}" > deploy.env
+          chmod 600 deploy.env
+
+          echo "Copying deploy.env to remote host..."
+          # disable strict host checking to avoid interactive prompt in fresh runners
+          scp -o StrictHostKeyChecking=no -P "${DEPLOY_SSH_PORT}" deploy.env "${DEPLOY_USER}@${DEPLOY_HOST}:/home/${DEPLOY_USER}/.env"
+
+          echo "Securing remote .env and verifying existence..."
+          ssh -o StrictHostKeyChecking=no -p "${DEPLOY_SSH_PORT}" "${DEPLOY_USER}@${DEPLOY_HOST}" \
+            "chmod 600 /home/${DEPLOY_USER}/.env && chown ${DEPLOY_USER}:${DEPLOY_USER} /home/${DEPLOY_USER}/.env && test -f /home/${DEPLOY_USER}/.env && echo ok || (echo 'deploy env missing' && exit 2)"
 
           echo "Deploying ${IMAGE} to ${DEPLOY_HOST}..."
           ssh -o StrictHostKeyChecking=no -p "${DEPLOY_SSH_PORT}" "${DEPLOY_USER}@${DEPLOY_HOST}" \
             "docker pull ${IMAGE} \
              && docker stop ${CONTAINER_NAME} || true \
              && docker rm ${CONTAINER_NAME} || true \
-             && docker run -d --name ${CONTAINER_NAME} -p 80:80 --restart unless-stopped ${IMAGE} \
+             && docker run -d --name ${CONTAINER_NAME} --env-file /home/${DEPLOY_USER}/.env -p 80:80 --restart unless-stopped ${IMAGE} \
              && sleep 3 \
              && docker exec ${CONTAINER_NAME} sh -c 'if ! grep -Eq \"VITE_SUPABASE_URL:\\s*\\\".+\\\"\" /usr/share/nginx/html/runtime-config.js || ! grep -Eq \"VITE_SUPABASE_ANON_KEY:\\s*\\\".+\\\"\" /usr/share/nginx/html/runtime-config.js; then echo \"runtime config missing or empty\" >&2; exit 2; else echo \"runtime-config OK\"; fi'"
+
+          rm -f deploy.env
