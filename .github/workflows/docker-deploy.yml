@@ -104,6 +104,8 @@ jobs:
             "docker pull ${IMAGE} \
              && docker stop ${CONTAINER_NAME} || true \
              && docker rm ${CONTAINER_NAME} || true \
-             && docker run -d --name ${CONTAINER_NAME} --env-file /home/${DEPLOY_USER}/.env -p 80:80 --restart unless-stopped ${IMAGE}"
+             && docker run -d --name ${CONTAINER_NAME} --env-file /home/${DEPLOY_USER}/.env -p 80:80 --restart unless-stopped ${IMAGE} \
+             && sleep 3 \
+             && docker exec ${CONTAINER_NAME} sh -c 'if ! grep -Eq \"VITE_SUPABASE_URL:\\s*\\\".+\\\"\" /usr/share/nginx/html/runtime-config.js || ! grep -Eq \"VITE_SUPABASE_ANON_KEY:\\s*\\\".+\\\"\" /usr/share/nginx/html/runtime-config.js; then echo \"runtime config missing or empty\" >&2; exit 2; else echo \"runtime-config OK\"; fi'"
 
           rm -f deploy.env
