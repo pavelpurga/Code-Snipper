@@ -95,8 +95,9 @@ jobs:
           # disable strict host checking to avoid interactive prompt in fresh runners
           scp -o StrictHostKeyChecking=no -P "${DEPLOY_SSH_PORT}" deploy.env "${DEPLOY_USER}@${DEPLOY_HOST}:/home/${DEPLOY_USER}/.env"
 
-          echo "Verifying remote .env existence..."
-          ssh -o StrictHostKeyChecking=no -p "${DEPLOY_SSH_PORT}" "${DEPLOY_USER}@${DEPLOY_HOST}" "test -f /home/${DEPLOY_USER}/.env && echo ok || (echo 'deploy env missing' && exit 2)"
+          echo "Securing remote .env and verifying existence..."
+          ssh -o StrictHostKeyChecking=no -p "${DEPLOY_SSH_PORT}" "${DEPLOY_USER}@${DEPLOY_HOST}" \
+            "chmod 600 /home/${DEPLOY_USER}/.env && chown ${DEPLOY_USER}:${DEPLOY_USER} /home/${DEPLOY_USER}/.env && test -f /home/${DEPLOY_USER}/.env && echo ok || (echo 'deploy env missing' && exit 2)"
 
           echo "Deploying ${IMAGE} to ${DEPLOY_HOST}..."
           ssh -o StrictHostKeyChecking=no -p "${DEPLOY_SSH_PORT}" "${DEPLOY_USER}@${DEPLOY_HOST}" \
