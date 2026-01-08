@@ -26,8 +26,16 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 # Copy built app
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy runtime template and entrypoint
-COPY public/runtime-config.js.template /usr/share/nginx/html/runtime-config.js.template
+# Create runtime-config.js.template with placeholders (will be rendered by entrypoint)
+RUN cat > /usr/share/nginx/html/runtime-config.js <<'EOF'
+window.__RUNTIME__ = {
+  VITE_SUPABASE_URL: "${VITE_SUPABASE_URL}",
+  VITE_SUPABASE_ANON_KEY: "${VITE_SUPABASE_ANON_KEY}",
+  VITE_CURRENCYLAYER_API_KEY: "${VITE_CURRENCYLAYER_API_KEY}"
+}
+EOF
+
+# Copy entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 

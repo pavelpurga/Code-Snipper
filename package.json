@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "gen:runtime": "node ./scripts/gen-runtime-config.js",
+    "dev": "node ./scripts/gen-runtime-config.js && vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -44,6 +45,7 @@
     "zod": "^4.3.4"
   },
   "devDependencies": {
+    "dotenv": "^16.1.4",
     "@babel/core": "^7.28.5",
     "@babel/preset-env": "^7.28.5",
     "@babel/preset-react": "^7.28.5",

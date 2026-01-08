@@ -79,16 +79,22 @@ jobs:
           IMAGE: ${{ needs.build-and-push.outputs.image }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_SSH_PORT: ${{ secrets.DEPLOY_SSH_PORT || '22' }}
-          CONTAINER_NAME: ${{ secrets.CONTAINER_NAME || 'code-snipper' }}
+          DEPLOY_SSH_PORT: ${{ secrets.DEPLOY_SSH_PORT }}
+          CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_CURRENCYLAYER_API_KEY: ${{ secrets.VITE_CURRENCYLAYER_API_KEY }}
         run: |
           set -euo pipefail
+          # default port fallback
+          DEPLOY_SSH_PORT="${DEPLOY_SSH_PORT:-22}"
+
           echo "Preparing deploy.env on runner (will be copied to remote)..."
 
           # Create deploy.env on runner from secrets (do not print values)
-          printf '%s\n' "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}" \
-                         "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}" \
-                         "VITE_CURRENCYLAYER_API_KEY=${{ secrets.VITE_CURRENCYLAYER_API_KEY }}" > deploy.env
+          printf '%s\n' "VITE_SUPABASE_URL=${VITE_SUPABASE_URL}" \
+                         "VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}" \
+                         "VITE_CURRENCYLAYER_API_KEY=${VITE_CURRENCYLAYER_API_KEY}" > deploy.env
           chmod 600 deploy.env
 
           echo "Copying deploy.env to remote host..."
