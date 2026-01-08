@@ -55,7 +55,7 @@ jobs:
           docker tag $IMAGE ${IMAGE_NAME}:latest
           docker push $IMAGE
           docker push ${IMAGE_NAME}:latest
-          echo "IMAGE=$IMAGE" >> $GITHUB_OUTPUT
+          echo "image=$IMAGE" >> $GITHUB_OUTPUT
 
   deploy:
     needs: build-and-push
