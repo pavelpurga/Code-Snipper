@@ -91,22 +91,19 @@ jobs:
           CONTAINER_NAME: ${{ secrets.CONTAINER_NAME || 'code-snipper' }}
         run: |
           set -e
-          echo "Deploying $IMAGE to ${DEPLOY_HOST}..., йцук          ssh -o StrictHostKeyChecking=no -p $DEPLOY_SSH_PORT $DEPLOY_USER@$DEPLOY_HOST "bash -s" << 'EOF'
-            set -e
-            # create secure .env with secrets
-            umask 077
-            cat > /home/${DEPLOY_USER}/.env <<'ENV'
-            VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}
-            VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}
-            VITE_CURRENCYLAYER_API_KEY=${{ secrets.VITE_CURRENCYLAYER_API_KEY }}
-            ENV
+          echo "Preparing deploy.env on runner (will be copied to remote)..."
+          # create deploy.env file with secrets on runner
+          printf 'VITE_SUPABASE_URL=%s\nVITE_SUPABASE_ANON_KEY=%s\nVITE_CURRENCYLAYER_API_KEY=%s\n' "${{ secrets.VITE_SUPABASE_URL }}" "${{ secrets.VITE_SUPABASE_ANON_KEY }}" "${{ secrets.VITE_CURRENCYLAYER_API_KEY }}" > deploy.env
 
-            # pull image and recreate container with env-file
-            docker pull $IMAGE
-            docker stop ${CONTAINER_NAME} || true
-            docker rm ${CONTAINER_NAME} || true
-            docker run -d --name ${CONTAINER_NAME} --env-file /home/${DEPLOY_USER}/.env -p 80:80 --restart unless-stopped $IMAGE
-          EOF
+          # ensure ssh is available and scp will work (ssh-agent step already added)
+          echo "Copying deploy.env to remote host..."
+          scp -P ${DEPLOY_SSH_PORT} deploy.env ${DEPLOY_USER}@${DEPLOY_HOST}:/home/${DEPLOY_USER}/.env
+
+          echo "Deploying $IMAGE to ${DEPLOY_HOST}..."
+          ssh -p ${DEPLOY_SSH_PORT} ${DEPLOY_USER}@${DEPLOY_HOST} "docker pull ${IMAGE} && docker stop ${CONTAINER_NAME} || true && docker rm ${CONTAINER_NAME} || true && docker run -d --name ${CONTAINER_NAME} --env-file /home/${DEPLOY_USER}/.env -p 80:80 --restart unless-stopped ${IMAGE}"
+
+          # cleanup local sensitive file
+          rm -f deploy.env
 
   # Optional: cleanup old images on GHCR - commented out example
   # cleanup:
